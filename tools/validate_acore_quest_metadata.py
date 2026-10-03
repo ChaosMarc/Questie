@@ -7,9 +7,9 @@ from pathlib import Path
 
 
 QUESTIE_FIX_FILES = [
-    "Database/Corrections/classicQuestFixes.lua",
-    "Database/Corrections/tbcQuestFixes.lua",
-    "Database/Corrections/wotlkQuestFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/classicQuestFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/tbcQuestFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/wotlkQuestFixes.lua",
 ]
 
 QUESTIE_RUNTIME_FLAGS = {
@@ -838,11 +838,13 @@ def load_questie_icon_types(path):
 
 
 def load_constants(addon_root):
-    questie_db_path = addon_root / "Database" / "QuestieDB.lua"
-    questie_quest_db_path = addon_root / "Database" / "questDB.lua"
-    questie_root_path = addon_root / "Questie.lua"
-    professions_path = addon_root / "Modules" / "QuestieProfessions.lua"
-    zone_ids_path = addon_root / "Database" / "Zones" / "zoneTables.lua"
+    core_root = addon_root / "Questie-335"
+    provider_root = addon_root / "Questie-335_AzerothCore"
+    questie_db_path = core_root / "Database" / "QuestieDB.lua"
+    questie_quest_db_path = core_root / "Database" / "questDB.lua"
+    questie_root_path = core_root / "Questie.lua"
+    professions_path = core_root / "Modules" / "QuestieProfessions.lua"
+    zone_ids_path = provider_root / "Database" / "Zones" / "zoneTables.lua"
 
     quest_keys = load_quest_keys(questie_quest_db_path)
     questie_icons = load_questie_icon_types(questie_root_path)
@@ -3850,7 +3852,7 @@ def main():
 
     parser = argparse.ArgumentParser(description="Validate Questie metadata against AzerothCore quest SQL.")
     parser.add_argument("--acore-source", default=r"P:\AC\source", help="Path to the AzerothCore source tree")
-    parser.add_argument("--quest-db", default="Database/Wotlk/wotlkQuestDB.lua", help="Path to the Questie WotLK quest DB")
+    parser.add_argument("--quest-db", default="Questie-335_AzerothCore/Database/Wotlk/wotlkQuestDB.lua", help="Path to the Questie WotLK quest DB")
     parser.add_argument("--quest-template-sql", help="Optional HeidiSQL export for quest_template")
     parser.add_argument("--quest-template-addon-sql", help="Optional HeidiSQL export for quest_template_addon")
     parser.add_argument("--spell-sql", help="Optional Spell.dbc SQL export used to infer crafted/created quest source items")

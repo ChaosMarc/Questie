@@ -47,10 +47,10 @@ from generate_acore_npc_corrections import (  # noqa: E402
 
 
 OBJECT_CORRECTION_FILES = [
-    ("Database/Corrections/classicObjectFixes.lua", ("QuestieObjectFixes:Load",)),
-    ("Database/Corrections/tbcObjectFixes.lua", ("QuestieTBCObjectFixes:Load",)),
+    ("Questie-335_AzerothCore/Database/Corrections/classicObjectFixes.lua", ("QuestieObjectFixes:Load",)),
+    ("Questie-335_AzerothCore/Database/Corrections/tbcObjectFixes.lua", ("QuestieTBCObjectFixes:Load",)),
     (
-        "Database/Corrections/wotlkObjectFixes.lua",
+        "Questie-335_AzerothCore/Database/Corrections/wotlkObjectFixes.lua",
         (
             "QuestieWotlkObjectFixes:Load",
             "QuestieWotlkObjectFixes:LoadReverseLinkFixes",
@@ -202,7 +202,7 @@ def apply_corrections(objects, corrections):
 
 
 def load_effective_questie_objects(repo_root, object_keys, fields):
-    objects = load_questie_objects(repo_root / "Database/Wotlk/wotlkObjectDB.lua", object_keys)
+    objects = load_questie_objects(repo_root / "Questie-335_AzerothCore/Database/Wotlk/wotlkObjectDB.lua", object_keys)
     zone_constants = parse_zone_id_constants(repo_root)
     for relative_path, function_names in OBJECT_CORRECTION_FILES:
         path = repo_root / relative_path
@@ -392,10 +392,10 @@ def collect_quest_referenced_ids(repo_root, candidate_ids):
         return set()
 
     paths = [
-        repo_root / "Database/Wotlk/wotlkQuestDB.lua",
-        repo_root / "Database/Corrections/classicQuestFixes.lua",
-        repo_root / "Database/Corrections/tbcQuestFixes.lua",
-        repo_root / "Database/Corrections/wotlkQuestFixes.lua",
+        repo_root / "Questie-335_AzerothCore/Database/Wotlk/wotlkQuestDB.lua",
+        repo_root / "Questie-335_AzerothCore/Database/Corrections/classicQuestFixes.lua",
+        repo_root / "Questie-335_AzerothCore/Database/Corrections/tbcQuestFixes.lua",
+        repo_root / "Questie-335_AzerothCore/Database/Corrections/wotlkQuestFixes.lua",
     ]
     texts = []
     for path in paths:
@@ -644,7 +644,7 @@ def main():
     parser = argparse.ArgumentParser(description="Generate Questie objectData corrections from AzerothCore 3.3.5 SQL data.")
     parser.add_argument("--acore-source", default=r"P:\AC\source", type=Path)
     parser.add_argument("--repo-root", default=Path("."), type=Path)
-    parser.add_argument("--output", default=Path("Compat/AzerothCoreObjectCorrections.lua"), type=Path)
+    parser.add_argument("--output", default=Path("Questie-335_AzerothCore/Compat/AzerothCoreObjectCorrections.lua"), type=Path)
     parser.add_argument("--report", default=Path("tools/reports/acore_object_corrections.md"), type=Path)
     parser.add_argument(
         "--wdm-root",
@@ -670,8 +670,8 @@ def main():
     args = parser.parse_args()
 
     repo_root = args.repo_root.resolve()
-    object_keys = parse_object_keys(repo_root / "Database/Wotlk/wotlkObjectDB.lua")
-    item_keys = parse_item_keys(repo_root / "Database/Wotlk/wotlkItemDB.lua")
+    object_keys = parse_object_keys(repo_root / "Questie-335_AzerothCore/Database/Wotlk/wotlkObjectDB.lua")
+    item_keys = parse_item_keys(repo_root / "Questie-335_AzerothCore/Database/Wotlk/wotlkItemDB.lua")
     unknown_fields = [field for field in args.fields if field not in object_keys]
     if unknown_fields:
         raise ValueError(f"Unknown objectKeys fields: {unknown_fields}")

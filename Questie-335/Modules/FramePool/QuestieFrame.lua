@@ -543,8 +543,6 @@ function _QuestieFrame:ShouldBeHidden()
                 or ((not QuestieIconVisibility:IsEnabled("dungeon", isMinimap)) and dungeon)
                 or ((not QuestieIconVisibility:IsEnabled("raid", isMinimap)) and raid)
                 or ((not QuestieIconVisibility:IsEnabled("pvp", isMinimap)) and pvp)
-            -- this quest group isn't loaded at all while disabled:
-            -- or ((not questieCharDB.showAQWarEffortQuests) and QuestieQuestBlacklist.AQWarEffortQuests[questId])
             )
         )
     then

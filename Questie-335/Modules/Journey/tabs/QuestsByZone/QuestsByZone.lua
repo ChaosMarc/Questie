@@ -13,8 +13,6 @@ local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
 local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
 ---@type QuestieCorrections
 local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
----@type QuestieQuestBlacklist
-local QuestieQuestBlacklist = QuestieLoader:ImportModule("QuestieQuestBlacklist")
 ---@type QuestieEvent
 local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
 ---@type QuestieLink
@@ -222,7 +220,7 @@ function _QuestieJourney.questsByZone:CategorizeQuests(quests)
     local breadcrumbCounter = 0
     local hiddenCounter = 0
 
-    local HIDE_ON_MAP = QuestieQuestBlacklist.HIDE_ON_MAP
+    local HIDE_ON_MAP = QuestieCorrections.HIDE_ON_MAP
     local hiddenQuests = QuestieCorrections.hiddenQuests
     local playerlevel = UnitLevel("player")
     local DoableStates = QuestieDB.DoableStates
@@ -486,13 +484,13 @@ function _QuestieJourney.questsByZone:CategorizeQuests(quests)
             end
 
             -- AQ War Effort quests (one-time world event that has ended for all realms)
-            if QuestieQuestBlacklist.AQWarEffortQuests[questId] then
+            if QuestieCorrections.AQWarEffortQuests[questId] then
                 tinsert(zoneTree[6].children, temp)
                 unobtainableCounter = unobtainableCounter + 1
             end
 
-            -- Scourge Invasion quests (Acore worldstate event)
-            if QuestieQuestBlacklist.ScourgeInvasionQuests[questId] then
+            -- Scourge Invasion quests can be gated by the provider's world event.
+            if QuestieCorrections.ScourgeInvasionQuests[questId] then
                 tinsert(zoneTree[6].children, temp)
                 unobtainableCounter = unobtainableCounter + 1
             end

@@ -1244,7 +1244,7 @@ local function ResolveCurrentAreaIdByZoneTexts()
     return nil
 end
 
----Returns the player's current AzerothCore AreaTable area ID.
+---Returns the player's current AreaTable area ID.
 ---@return number?
 function QuestieCompat.GetCurrentAreaId()
     local areaId = ResolveCurrentAreaIdByZoneTexts()
@@ -1263,7 +1263,7 @@ function QuestieCompat.GetCurrentAreaId()
     return nil
 end
 
----Returns the player's current AzerothCore AreaTable parent zone ID.
+---Returns the player's current AreaTable parent zone ID.
 ---@return number?
 function QuestieCompat.GetCurrentZoneId()
     local areaId = QuestieCompat.GetCurrentAreaId()

@@ -18,24 +18,30 @@ local MinimapIcon = QuestieLoader:ImportModule("MinimapIcon")
 local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
 ---@type QuestiePlayer
 local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
----@type QuestXP
-local QuestXP = QuestieLoader:ImportModule("QuestXP")
-
 local math_max = math.max
 local math_min = math.min
-local bitband = bit.band
 local strfind = string.find
 local questLogCompatibilityInitialized = false
 local questObjectivesCache = {}
 local uiInfoChangedQuestIds = {}
 local QUEST_OBJECTIVE_CACHE_TTL_SECONDS = 3
-local QUEST_FLAGS_NO_MONEY_FROM_XP = 0x100
 
 -- Forward declarations for the 3.3.5 reward-completion fallback near the end
 -- of this file. The raw cache is kept before repeatable quests are filtered
 -- from Questie.db.char.complete.
 local ProcessPendingRewardCompletions
 local serverCompletedQuests = {}
+local emptyProviderDailyCompletions = {}
+
+function QuestieCompat.GetProviderDailyCompletionIds()
+    return emptyProviderDailyCompletions
+end
+
+function QuestieCompat.SetProviderDailyQuestComplete()
+end
+
+function QuestieCompat.ClearProviderDailyCompletions()
+end
 
 local function parseQuestObjective(text)
     return string.match(string.gsub(text, "\239\188\154", ":"), "(.*):%s*([%d]+)%s*/%s*([%d]+)")
@@ -261,6 +267,10 @@ end
 
 -- https://wowpedia.fandom.com/wiki/API_GetQuestLogRewardMoney
 -- Returns the amount of money rewarded for a quest.
+function QuestieCompat.GetProviderExtraQuestRewardMoney()
+    return 0
+end
+
 function QuestieCompat.GetQuestLogRewardMoney(questID)
     local rewardMoney = QuestieCompat.RewardMoney[questID] or 0
     local rewardMoneyDifficulty = QuestieCompat.RewardMoneyDifficulty[questID] or 0
@@ -274,20 +284,7 @@ function QuestieCompat.GetQuestLogRewardMoney(questID)
         end
     end
 
-    -- https://wowpedia.fandom.com/wiki/Quest?oldid=1035002 Formula is XP gained * 6c
-    if QuestiePlayer.IsMaxLevel() then
-        local questFlags = QuestieDB.QueryQuestSingle(questID, "questFlags") or 0
-        if bitband(questFlags, QUEST_FLAGS_NO_MONEY_FROM_XP) == 0 then
-            -- AzerothCore's max-level XP-to-money conversion does not apply
-            -- player quest XP aura modifiers such as heirloom bonuses.
-            local xpReward = QuestXP:GetQuestLogRewardXP(questID, true, true)
-            if xpReward > 0 then
-                rewardMoney = rewardMoney + xpReward * 6
-            end
-        end
-    end
-
-    return rewardMoney
+    return rewardMoney + QuestieCompat.GetProviderExtraQuestRewardMoney(questID)
 end
 
 local MAX_DAILY_RESET_SECONDS = 48 * 60 * 60
@@ -359,8 +356,13 @@ end
 
 local function _GetLegacyDailyResetTime()
     local char = Questie.db.char
-    if next(char.daily or {}) or next(char.acoreDailyQuestCompletions or {}) then
+    if next(char.daily or {}) or next(QuestieCompat.GetProviderDailyCompletionIds()) then
         return Questie.db.profile.dailyResetTime
+    end
+    for _, completions in pairs(char.providerDailyQuestCompletions or {}) do
+        if next(completions) then
+            return Questie.db.profile.dailyResetTime
+        end
     end
 end
 
@@ -468,9 +470,15 @@ function QuestieCompat.ResetDailyQuests(reset)
             Questie.db.char.complete[questId] = nil
             serverCompletedQuests[questId] = nil
         end
-        for questId in pairs(Questie.db.char.acoreDailyQuestCompletions or {}) do
+        for questId in pairs(QuestieCompat.GetProviderDailyCompletionIds()) do
             Questie.db.char.complete[questId] = nil
             serverCompletedQuests[questId] = nil
+        end
+        for _, completions in pairs(Questie.db.char.providerDailyQuestCompletions or {}) do
+            for questId in pairs(completions) do
+                Questie.db.char.complete[questId] = nil
+                serverCompletedQuests[questId] = nil
+            end
         end
         -- A server query can also report dailies completed outside this session.
         for questId in pairs(serverCompletedQuests) do
@@ -479,7 +487,8 @@ function QuestieCompat.ResetDailyQuests(reset)
                 serverCompletedQuests[questId] = nil
             end
         end
-        Questie.db.char.acoreDailyQuestCompletions = {}
+        QuestieCompat.ClearProviderDailyCompletions()
+        Questie.db.char.providerDailyQuestCompletions = {}
         Questie.db.char.dailyResetTime = nil
         Questie.db.profile.dailyResetTime = nil
     end
@@ -604,32 +613,13 @@ function QuestieCompat.GetQuestsCompleted()
     return Questie.db.char.complete
 end
 
----Returns the unfiltered completion state sent by the 3.3.5 server.
----Unlike Questie.db.char.complete, this retains daily/repeatable entries long
----enough for AzerothCore availability conditions to inspect them.
+---Returns unfiltered completion state sent by the 3.3.5 server.
+---Unlike Questie.db.char.complete, this retains daily/repeatable entries.
 ---@param questId number
 ---@return boolean
 function QuestieCompat.IsQuestCompletedOnServer(questId)
     return serverCompletedQuests[questId] == true
         or (Questie.db.char.complete and Questie.db.char.complete[questId] == true)
-end
-
-local function EnsureAzerothCoreDailyCompletionReset()
-    Questie.db.char.acoreDailyQuestCompletions = Questie.db.char.acoreDailyQuestCompletions or {}
-    QuestieCompat.ResetDailyQuests()
-end
-
----@param questId number
-function QuestieCompat.SetAzerothCoreDailyQuestComplete(questId)
-    EnsureAzerothCoreDailyCompletionReset()
-    Questie.db.char.acoreDailyQuestCompletions[questId] = true
-end
-
----@param questId number
----@return boolean
-function QuestieCompat.IsAzerothCoreDailyQuestComplete(questId)
-    EnsureAzerothCoreDailyCompletionReset()
-    return Questie.db.char.acoreDailyQuestCompletions[questId] == true
 end
 
 -- Fires when the data requested by QueryQuestsCompleted() is available.
@@ -672,8 +662,7 @@ function QuestieCompat:QUEST_QUERY_COMPLETE(event)
         QuestieCompat.Merge(Questie.db.char.complete, Questie.db.char.monthly)
     end
 
-    -- The completed-quest response is authoritative for AzerothCore quest
-    -- status conditions. It can arrive after Questie's initial map draw.
+    -- The completed-quest response can arrive after the initial map draw.
     if Questie.started then
         AvailableQuests.CalculateAndDrawAll()
     end
@@ -1038,7 +1027,7 @@ local function CompleteRewardQuest(questId)
     -- Keep the raw cache in sync even when the normal chat path handled the
     -- turn-in before another completed-quest query was needed.
     if QuestieDB.IsDailyQuest(questId) then
-        QuestieCompat.SetAzerothCoreDailyQuestComplete(questId)
+        QuestieCompat.SetProviderDailyQuestComplete(questId)
     end
     serverCompletedQuests[questId] = true
     _QuestEventHandler:QuestTurnedIn(questId)

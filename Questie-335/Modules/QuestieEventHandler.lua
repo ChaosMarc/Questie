@@ -201,7 +201,7 @@ function QuestieEventHandler:RegisterLateEvents()
                 QuestieTracker:Update()
             end)
 
-            -- AzerothCore can gate quest availability directly on earned
+            -- Database providers can gate quest availability on earned
             -- achievements, so refresh quest markers immediately.
             AvailableQuests.CalculateAndDrawAll()
         end)

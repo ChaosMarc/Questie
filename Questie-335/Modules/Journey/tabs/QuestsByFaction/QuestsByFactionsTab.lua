@@ -71,8 +71,17 @@ function _QuestieJourney.questsByFaction:DrawTab(container)
 
     treegroup:SetFullHeight(true)
     treegroup:SetFullWidth(true)
+    treegroup:SetAutoAdjustHeight(false)
     treegroup:SetLayout("fill")
     container:AddChild(treegroup)
+
+    local factionId = factionDropdown.value
+    if factionId then
+        local factionTree = _QuestieJourney.questsByFaction:CollectFactionQuests(factionId)
+        if factionTree then
+            _QuestieJourney.questsByFaction:ManageTree(treegroup, factionTree)
+        end
+    end
 end
 
 _GetWatchedFactionId = function()
@@ -145,11 +154,6 @@ _CreateFactionDropdown = function()
 
         if currentFactionId ~= RESET and factions[currentFactionId] then
             dropdown:SetValue(currentFactionId)
-
-            local factionTree = _QuestieJourney.questsByFaction:CollectFactionQuests(currentFactionId)
-            if factionTree then
-                _QuestieJourney.questsByFaction:ManageTree(treegroup, factionTree)
-            end
         elseif currentFactionId ~= RESET then
             dropdown:SetText(l10n('Select Faction'))
         end
@@ -190,5 +194,4 @@ _HandleFactionSelection = function(widget, _)
         _QuestieJourney.lastFactionSelection[2] = factionId
     end
 end
-
 

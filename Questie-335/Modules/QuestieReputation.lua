@@ -13,7 +13,7 @@ local GetFactionInfo = QuestieCompat.GetFactionInfo
 local playerReputations = {}
 local factionNameCache = {}
 
-local _ReachedNewStanding, _WinterSaberChanged, _FilterShaTarRewards, _GetRewardMultiplier, _GetFactionQuestRewardRate
+local _ReachedNewStanding, _WinterSaberChanged, _FilterShaTarRewards, _GetRewardMultiplier
 
 -- Fast local references
 local ExpandFactionHeader, GetNumFactions = ExpandFactionHeader, GetNumFactions
@@ -257,7 +257,7 @@ function QuestieReputation.GetReputationReward(questId)
 
     for _, rewardPair in pairs(rewards) do
         local factionId = rewardPair[1]
-        local rewardValue = rewardPair[2] * _GetFactionQuestRewardRate(questId, factionId)
+        local rewardValue = rewardPair[2] * QuestieReputation.GetFactionQuestRewardRate(questId, factionId)
 
         if rewardValue > 0 and reputationMultiplier ~= 1 then
             rewardValue = floor(rewardValue * reputationMultiplier)
@@ -289,24 +289,8 @@ end
 ---@param questId QuestId
 ---@param factionId number
 ---@return number
-_GetFactionQuestRewardRate = function(questId, factionId)
-    local factionRates = QuestieCompat.AzerothCoreReputationRates
-    local rates = factionRates and factionRates[factionId]
-    if not rates then
-        return 1
-    end
-
-    if QuestieDB.IsDailyQuest(questId) then
-        return rates[2]
-    elseif QuestieDB.IsWeeklyQuest(questId) then
-        return rates[3]
-    elseif QuestieDB.IsMonthlyQuest(questId) then
-        return rates[4]
-    elseif QuestieDB.IsRepeatable(questId) then
-        return rates[5]
-    end
-
-    return rates[1]
+function QuestieReputation.GetFactionQuestRewardRate()
+    return 1
 end
 
 ---@return number

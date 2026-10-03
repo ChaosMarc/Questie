@@ -60,11 +60,17 @@ function _QuestieJourney:CreateObjectiveText(desc)
     return objText
 end
 
+local factionDrawTimer
+
 function _QuestieJourney:HandleTabChange(container, group)
     if not _QuestieJourney.containerCache then
         _QuestieJourney.containerCache = container
     end
 
+    if factionDrawTimer then
+        factionDrawTimer:Cancel()
+        factionDrawTimer = nil
+    end
     container:ReleaseChildren()
 
     if group == "journey" then
@@ -77,7 +83,7 @@ function _QuestieJourney:HandleTabChange(container, group)
         _QuestieJourney.lastOpenWindow = "zone"
         return nil
     elseif group == "faction" then
-        ThreadLib.ThreadInstant(function()
+        factionDrawTimer = ThreadLib.ThreadInstant(function()
             _QuestieJourney.questsByFaction:DrawTab(container)
         end)
         _QuestieJourney.lastOpenWindow = "faction"

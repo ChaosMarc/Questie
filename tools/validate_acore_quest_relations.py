@@ -779,7 +779,7 @@ def build_summary(mismatches):
 def main():
     parser = argparse.ArgumentParser(description="Validate Questie WotLK quest starter/finisher data against AzerothCore SQL.")
     parser.add_argument("--acore-source", default=r"P:\AC\source", help="Path to the AzerothCore source tree")
-    parser.add_argument("--quest-db", default="Database/Wotlk/wotlkQuestDB.lua", help="Path to the Questie WotLK quest DB")
+    parser.add_argument("--quest-db", default="Questie-335_AzerothCore/Database/Wotlk/wotlkQuestDB.lua", help="Path to the Questie WotLK quest DB")
     parser.add_argument(
         "--quest-template-sql",
         help="Optional HeidiSQL export for quest_template; sibling relation exports and item_template.sql will be used when present",
@@ -788,9 +788,9 @@ def main():
         "--quest-fixes",
         nargs="*",
         default=[
-            "Database/Corrections/classicQuestFixes.lua",
-            "Database/Corrections/tbcQuestFixes.lua",
-            "Database/Corrections/wotlkQuestFixes.lua",
+            "Questie-335_AzerothCore/Database/Corrections/classicQuestFixes.lua",
+            "Questie-335_AzerothCore/Database/Corrections/tbcQuestFixes.lua",
+            "Questie-335_AzerothCore/Database/Corrections/wotlkQuestFixes.lua",
         ],
         help="Quest correction files to merge before comparison",
     )

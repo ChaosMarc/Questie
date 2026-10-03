@@ -1,7 +1,7 @@
 ## Interface: 30300
 ## Title: Questie-335|cFF00FF00 v9.9.4-335|r
 ## Author: Aldori + Original Questie Team
-## Notes: A standalone Classic QuestHelper backported to 335 and sourced using AzerothCore data.
+## Notes: A Classic QuestHelper backported to 335. Quest data requires a database provider addon.
 ## Notes-esMX: Ayundante de misión
 ## Notes-esES: Ayundante de misión
 ## Notes-ptBR: Ajudante de missão
@@ -31,78 +31,35 @@ Modules\Libs\ThreadLib.lua
 
 #Quest XP
 Database\QuestXP\QuestieXP.lua
-Database\QuestXP\DB\xpDB-azerothcore-wotlk.lua
 
 # stream module (used by DB)
 Modules\QuestieStream.lua
 
 # Zones
-Database\Zones\zoneTables.lua
 Database\Zones\zoneDB.lua
 
 # Databases
-Database\Wotlk\wotlkItemDB.lua
-Database\Wotlk\wotlkNpcDB.lua
-Database\Wotlk\wotlkObjectDB.lua
-Database\Wotlk\wotlkQuestDB.lua
 Database\QuestieDB.lua
 Database\Provider.lua
 Database\questDB.lua
 Database\objectDB.lua
 Database\npcDB.lua
 Database\itemDB.lua
-Database\Constants.lua
-Database\MeetingStones.lua
+Database\ProviderSchema.lua
 
 # Corrections
-Database\Corrections\AutoTableUpdates.lua
 Database\Corrections\QuestieCorrections.lua
-Database\Corrections\QuestieItemBlacklist.lua
-Database\Corrections\QuestieNPCBlacklist.lua
-Database\Corrections\QuestieQuestBlacklist.lua
 Database\Corrections\QuestieEvent.lua
-
-# Automatic General Corrections
-Database\Corrections\Automatic\itemStartFixes.lua
-Database\Corrections\Automatic\classicQuestReputationFixes.lua
-
-# Classic Corrections
-Database\Corrections\classicQuestFixes.lua
-Database\Corrections\classicNPCFixes.lua
-Database\Corrections\classicItemFixes.lua
-Database\Corrections\classicObjectFixes.lua
-
-# TBC Corrections
-Database\Corrections\tbcQuestFixes.lua
-Database\Corrections\tbcNPCFixes.lua
-Database\Corrections\tbcItemFixes.lua
-Database\Corrections\tbcObjectFixes.lua
-
-# Wotlk Corrections
-Database\Corrections\wotlkQuestFixes.lua
-Database\Corrections\wotlkNPCFixes.lua
-Database\Corrections\wotlkItemFixes.lua
-Database\Corrections\wotlkObjectFixes.lua
 
 # Item Drops
 Database\DropTables\dropDB.lua
-Database\DropTables\data\wotlkAcoreItemDrops.lua
 
 # Compiler
 Database\compiler.lua
-Database\Wotlk\AzerothCoreProvider.lua
 
 # Localization
 Localization\l10n.lua
 Localization\Translations\Translations.xml
-
-Localization\lookups\lookupQuestCategories.lua
-Localization\lookups\lookupZones.lua
-Localization\lookups\lookupOverrides.lua
-Localization\lookups\Wotlk\lookupItems\lookupItems.xml
-Localization\lookups\Wotlk\lookupNpcs\lookupNpcs.xml
-Localization\lookups\Wotlk\lookupObjects\lookupObjects.xml
-Localization\lookups\Wotlk\lookupQuests\lookupQuests.xml
 
 # Libs
 Modules\Libs\utf8.lua

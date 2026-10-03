@@ -350,6 +350,14 @@ function _MinimapIcon:CreateDataBrokerObject()
         icon = QuestieLib.AddonPath.."Icons\\complete.blp",
 
         OnClick = function (_, button)
+            if Questie.noDatabase then
+                if button == "LeftButton" or button == "RightButton" then
+                    QuestieCombatQueue:Queue(function()
+                        QuestieOptions:OpenConfigWindow()
+                    end)
+                end
+                return
+            end
             if (not Questie.started) then
                 return
             end
@@ -408,6 +416,10 @@ function _MinimapIcon:CreateDataBrokerObject()
         OnTooltipShow = function (tooltip)
             tooltip:AddDoubleLine(Questie:Colorize("Questie", 'gold'), Questie:Colorize(QuestieLib:GetAddonVersionString(), 'gray'))
             tooltip:AddLine(" ")
+            if Questie.noDatabase then
+                tooltip:AddLine(l10n('Questie Options'))
+                return
+            end
             tooltip:AddDoubleLine(Questie:Colorize(l10n('Left Click'), 'lightBlue'), Questie:Colorize(l10n('Toggle My Journey'), 'white'))
             tooltip:AddDoubleLine(Questie:Colorize(l10n('Right Click'), 'lightBlue'), Questie:Colorize(l10n('Toggle Menu'), 'white'))
             tooltip:AddDoubleLine(Questie:Colorize(l10n('Shift') .. ' + ' .. l10n('Left Click'), 'lightBlue'), Questie:Colorize(l10n('Questie Options'), 'white'))

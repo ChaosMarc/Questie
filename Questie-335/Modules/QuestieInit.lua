@@ -113,6 +113,29 @@ local C_Timer = QuestieCompat.C_Timer
 local coYield = coroutine.yield
 local databaseCompiledThisInitialization = false
 
+local function startWithoutDatabase()
+    Questie.Debug(Questie.DEBUG_INFO, "[QuestieInit] No database provider registered; starting configuration only.")
+
+    if QUESTIE_LOCALES_OVERRIDE ~= nil then
+        l10n:InitializeLocaleOverride()
+    end
+    if Questie.db.global.questieLocaleDiff then
+        l10n:SetUILocale(Questie.db.global.questieLocale)
+    elseif QUESTIE_LOCALES_OVERRIDE ~= nil then
+        l10n:SetUILocale(QUESTIE_LOCALES_OVERRIDE.locale)
+    else
+        l10n:SetUILocale(GetLocale())
+    end
+
+    Questie:SetIcons()
+    QuestieOptions:Initialize()
+    MinimapIcon:Init()
+    QuestieCombatQueue.Initialize()
+    QuestieSlash.RegisterOptionsOnlySlashCommands()
+    Questie.noDatabase = true
+    Questie:Print("No Questie database provider loaded. Questie options remain available.")
+end
+
 local function loadFullDatabase()
     print("\124cFF4DDBFF [1/9] " .. l10n("Loading database") .. "...")
 
@@ -528,6 +551,11 @@ function QuestieInit:LoadBaseDB()
 end
 
 function _QuestieInit.StartStageCoroutine()
+    if not QuestieDBProvider:HasActive() then
+        startWithoutDatabase()
+        return
+    end
+
     for i = 1, #QuestieInit.Stages do
         QuestieInit.Stages[i]()
         Questie.Debug(Questie.DEBUG_INFO, "[QuestieInit:StartStageCoroutine] Stage " .. i .. " done.")
@@ -557,9 +585,12 @@ end
 -- called by the PLAYER_LOGIN event handler
 function QuestieInit:Init()
     databaseCompiledThisInitialization = false
+    if not QuestieDBProvider:HasActive() and Questie.db.profile.trackerEnabled and not Questie.db.profile.showBlizzardQuestTimer then
+        QuestieCompat.ShowWatchFrame()
+    end
     ThreadLib.Thread(_QuestieInit.StartStageCoroutine, Questie.db.profile.initDelay or 0, l10n("Error during initialization!"), _QuestieInit.OnInitializationComplete, "QuestieInit.StartStageCoroutine")
 
-    if Questie.db.profile.trackerEnabled then
+    if QuestieDBProvider:HasActive() and Questie.db.profile.trackerEnabled then
         -- This needs to be called ASAP otherwise tracked Achievements in the Blizzard WatchFrame shows upon login
         local WatchFrame = QuestTimerFrame or WatchFrame
 

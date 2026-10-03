@@ -11,47 +11,6 @@ local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
 local RamerDouglasPeucker = QuestieLoader:ImportModule("RamerDouglasPeucker")
 ---@type QuestieEvent
 local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
----@type QuestieQuestBlacklist
-local QuestieQuestBlacklist = QuestieLoader:ImportModule("QuestieQuestBlacklist")
----@type QuestieNPCBlacklist
-local QuestieNPCBlacklist = QuestieLoader:ImportModule("QuestieNPCBlacklist")
----@type QuestieItemBlacklist
-local QuestieItemBlacklist = QuestieLoader:ImportModule("QuestieItemBlacklist")
-
----@type QuestieQuestFixes
-local QuestieQuestFixes = QuestieLoader:ImportModule("QuestieQuestFixes")
----@type QuestieClassicQuestReputationFixes
-local QuestieClassicQuestReputationFixes = QuestieLoader:ImportModule("QuestieClassicQuestReputationFixes")
----@type QuestieNPCFixes
-local QuestieNPCFixes = QuestieLoader:ImportModule("QuestieNPCFixes")
----@type QuestieItemFixes
-local QuestieItemFixes = QuestieLoader:ImportModule("QuestieItemFixes")
----@type QuestieObjectFixes
-local QuestieObjectFixes = QuestieLoader:ImportModule("QuestieObjectFixes")
-
----@type QuestieTBCQuestFixes
-local QuestieTBCQuestFixes = QuestieLoader:ImportModule("QuestieTBCQuestFixes")
----@type QuestieTBCNpcFixes
-local QuestieTBCNpcFixes = QuestieLoader:ImportModule("QuestieTBCNpcFixes")
----@type QuestieTBCItemFixes
-local QuestieTBCItemFixes = QuestieLoader:ImportModule("QuestieTBCItemFixes")
----@type QuestieTBCObjectFixes
-local QuestieTBCObjectFixes = QuestieLoader:ImportModule("QuestieTBCObjectFixes")
-
----@type QuestieWotlkQuestFixes
-local QuestieWotlkQuestFixes = QuestieLoader:ImportModule("QuestieWotlkQuestFixes")
----@type QuestieWotlkNpcFixes
-local QuestieWotlkNpcFixes = QuestieLoader:ImportModule("QuestieWotlkNpcFixes")
----@type QuestieWotlkItemFixes
-local QuestieWotlkItemFixes = QuestieLoader:ImportModule("QuestieWotlkItemFixes")
----@type QuestieWotlkObjectFixes
-local QuestieWotlkObjectFixes = QuestieLoader:ImportModule("QuestieWotlkObjectFixes")
-
----@type IsleOfQuelDanas
-local IsleOfQuelDanas = QuestieLoader:ImportModule("IsleOfQuelDanas")
-
---- Automatic corrections
-local QuestieItemStartFixes = QuestieLoader:ImportModule("QuestieItemStartFixes")
 
 --[[
     This file load the corrections of the database files.
@@ -80,124 +39,27 @@ QuestieCorrections.questTooltipHints = {}
 QuestieCorrections.objectiveTooltipHints = {}
 ---@type table<QuestId, table<integer, { [1]: "monster"|"object"|"item", [2]: number }>>
 QuestieCorrections.triggerEndTooltipTargets = {}
+QuestieCorrections.questItemBlacklist = {}
+QuestieCorrections.questNPCBlacklist = {}
+QuestieCorrections.hiddenQuests = {}
+QuestieCorrections.AQWarEffortQuests = {}
+QuestieCorrections.ScourgeInvasionQuests = {}
+QuestieCorrections.SunsReachQuests = {}
+QuestieCorrections.HIDE_ON_MAP = "HIDE_ON_MAP"
 
--- this function filters a table of values, if the value is TBC_ONLY or CLASSIC_ONLY, set it to true or nil if that case is met
----@generic T
----@param values T
----@return T
-local function filterExpansion(values)
-    local isClassic = Questie.IsClassic
-    local isTBC = Questie.IsTBC
-    local isWotlk = Questie.IsWotlk
-    for k, v in pairs(values) do
-        if v == QuestieCorrections.WOTLK_ONLY then
-            if isWotlk then
-                values[k] = true
-            else
-                values[k] = nil
-            end
-        elseif v == QuestieCorrections.TBC_ONLY then
-            if isTBC then
-                values[k] = true
-            else
-                values[k] = nil
-            end
-        elseif v == QuestieCorrections.CLASSIC_ONLY then
-            if isTBC or isWotlk then
-                values[k] = nil
-            else
-                values[k] = true
-            end
-        elseif v == QuestieCorrections.TBC_AND_WOTLK then
-            if isTBC or isWotlk then
-                values[k] = true
-            else
-                values[k] = nil
-            end
-        elseif v == QuestieCorrections.CLASSIC_AND_TBC then
-            if isClassic or isTBC then
-                values[k] = true
-            else
-                values[k] = nil
-            end
-        end
+local providerCorrections
+
+function QuestieCorrections:SetProviderCorrections(handlers)
+    if providerCorrections or type(handlers) ~= "table"
+        or type(handlers.Load) ~= "function" or type(handlers.LoadCached) ~= "function" then
+        error("Invalid or duplicate Questie corrections provider")
     end
-    return values
+    providerCorrections = handlers
 end
 
-do
-    local type, assert = type, assert
-    --- Add runtime overrides for the database
-    ---@param override_table table<number, table<number, string|table|number>>
-    ---@param new_overrides table<number, table<number, string|table|number>>
-    local function addOverride(override_table, new_overrides)
-        assert(type(override_table) == "table", "Override table must be a table!")
-        assert(type(new_overrides) == "table", "New overrides must be a table!")
-        for id, data in pairs(new_overrides) do
-            assert(type(id) == "number", "Override id must be a number!")
-            assert(type(data) == "table", "Override data must be a table!")
-            -- If no override exist assign it
-            if not override_table[id] then
-                override_table[id] = data
-            else
-                -- Override already exists, merge the new data
-                for key, value in pairs(data) do
-                    override_table[id][key] = value
-                end
-            end
-        end
-    end
-
-    function QuestieCorrections:MinimalInit() -- db already compiled
-
-        -- Classic Era Corrections
-        addOverride(QuestieDB.itemDataOverrides, QuestieItemFixes:LoadFactionFixes())
-        addOverride(QuestieDB.npcDataOverrides, QuestieNPCFixes:LoadFactionFixes())
-        addOverride(QuestieDB.objectDataOverrides, QuestieObjectFixes:LoadFactionFixes())
-        addOverride(QuestieDB.questDataOverrides, QuestieQuestFixes:LoadFactionFixes())
-
-        -- TBC Corrections
-        if (Questie.IsTBC or Questie.IsWotlk) then
-            addOverride(QuestieDB.itemDataOverrides, QuestieTBCItemFixes:LoadFactionFixes())
-            addOverride(QuestieDB.npcDataOverrides, QuestieTBCNpcFixes:LoadFactionFixes())
-            addOverride(QuestieDB.objectDataOverrides, QuestieTBCObjectFixes:LoadFactionFixes())
-            addOverride(QuestieDB.questDataOverrides, QuestieTBCQuestFixes:LoadFactionFixes())
-        end
-
-        -- WOTLK Corrections
-        if (Questie.IsWotlk) then
-            addOverride(QuestieDB.npcDataOverrides, QuestieWotlkNpcFixes:LoadFactionFixes())
-            addOverride(QuestieDB.itemDataOverrides, QuestieWotlkItemFixes:LoadFactionFixes())
-            addOverride(QuestieDB.objectDataOverrides, QuestieWotlkObjectFixes:LoadFactionFixes())
-        end
-
-        QuestieCorrections.questItemBlacklist = filterExpansion(QuestieItemBlacklist:Load())
-        QuestieCorrections.questNPCBlacklist = filterExpansion(QuestieNPCBlacklist:Load())
-        QuestieCorrections.hiddenQuests = filterExpansion(QuestieQuestBlacklist:Load())
-
-        -- Isle of Quel'Danas Phase Blacklist
-        if Questie.db.profile.isleOfQuelDanasPhase == IsleOfQuelDanas.MAX_ISLE_OF_QUEL_DANAS_PHASES then
-            for id, hide in pairs(IsleOfQuelDanas.quests[Questie.db.profile.isleOfQuelDanasPhase]) do
-                -- This has to be a nil-check, because the value could be false
-                if (QuestieCorrections.hiddenQuests[id] == nil) then
-                    QuestieCorrections.hiddenQuests[id] = hide
-                end
-            end
-        end
-
-        -- Wotlk Blacklist
-        if (Questie.IsWotlk) then
-            -- We only add blacklist if no blacklist entry for the quest already exists
-            for id, hide in pairs(QuestieQuestBlacklist.LoadAutoBlacklistWotlk()) do
-                -- This has to be a nil-check, because the value could be false
-                if (QuestieCorrections.hiddenQuests[id] == nil) then
-                    QuestieCorrections.hiddenQuests[id] = hide
-                end
-            end
-        end
-
-        if QuestieCompat.Is335 then QuestieCompat.LoadBlacklists() end
-
+function QuestieCorrections:MinimalInit()
+    if providerCorrections then
+        providerCorrections.LoadCached()
     end
 end
 
@@ -235,40 +97,9 @@ end
 
 ---@param validationTables table? Only used by the CI validation scripts to validate the corrections against the original database values and find irrelevant corrections
 function QuestieCorrections:Initialize(validationTables)
-    -- Older expansion corrections should not create incomplete records on newer clients.
-    -- 335 uses the AzerothCore compatibility corrections as its current expansion data.
-    local classicNoNewEntries = Questie.IsTBC or Questie.IsWotlk or QuestieCompat.Is335
-    local tbcNoNewEntries = Questie.IsWotlk or QuestieCompat.Is335
-
-    -- Classic Corrections
-    _LoadCorrections("questData", QuestieClassicQuestReputationFixes:Load(), QuestieDB.questKeysReversed, validationTables, nil, classicNoNewEntries)
-    _LoadCorrections("questData", QuestieQuestFixes:Load(), QuestieDB.questKeysReversed, validationTables, nil, classicNoNewEntries)
-    _LoadCorrections("npcData", QuestieNPCFixes:Load(), QuestieDB.npcKeysReversed, validationTables, nil, classicNoNewEntries)
-    _LoadCorrections("itemData", QuestieItemFixes:Load(), QuestieDB.itemKeysReversed, validationTables, nil, classicNoNewEntries)
-    _LoadCorrections("objectData", QuestieObjectFixes:Load(), QuestieDB.objectKeysReversed, validationTables, nil, classicNoNewEntries)
-
-    if Questie.IsTBC or Questie.IsWotlk then
-        _LoadCorrections("questData", QuestieTBCQuestFixes:Load(), QuestieDB.questKeysReversed, validationTables, nil, tbcNoNewEntries)
-        _LoadCorrections("npcData", QuestieTBCNpcFixes:Load(), QuestieDB.npcKeysReversed, validationTables, nil, tbcNoNewEntries)
-        _LoadCorrections("itemData", QuestieTBCItemFixes:Load(), QuestieDB.itemKeysReversed, validationTables, nil, tbcNoNewEntries)
-        _LoadCorrections("objectData", QuestieTBCObjectFixes:Load(), QuestieDB.objectKeysReversed, validationTables, nil, tbcNoNewEntries)
+    if providerCorrections then
+        providerCorrections.Load(_LoadCorrections, validationTables)
     end
-
-    if Questie.IsWotlk then
-        _LoadCorrections("questData", QuestieWotlkQuestFixes:Load(), QuestieDB.questKeysReversed, validationTables)
-        _LoadCorrections("npcData", QuestieWotlkNpcFixes:LoadAutomatics(), QuestieDB.npcKeysReversed, validationTables)
-        _LoadCorrections("npcData", QuestieWotlkNpcFixes:Load(), QuestieDB.npcKeysReversed, validationTables)
-        _LoadCorrections("npcData", QuestieWotlkNpcFixes:LoadReverseLinkFixes(), QuestieDB.npcKeysReversed, validationTables)
-        _LoadCorrections("itemData", QuestieWotlkItemFixes:Load(), QuestieDB.itemKeysReversed, validationTables)
-        _LoadCorrections("itemData", QuestieWotlkItemFixes:LoadReverseStartQuestFixes(), QuestieDB.itemKeysReversed, validationTables)
-        _LoadCorrections("objectData", QuestieWotlkObjectFixes:Load(), QuestieDB.objectKeysReversed, validationTables)
-        _LoadCorrections("objectData", QuestieWotlkObjectFixes:LoadReverseLinkFixes(), QuestieDB.objectKeysReversed, validationTables)
-    end
-
-    --- Corrections that apply to all versions
-    _LoadCorrections("itemData", QuestieItemStartFixes:LoadAutomaticQuestStarts(), QuestieDB.itemKeysReversed, validationTables, true, true)
-
-    if QuestieCompat.Is335 then QuestieCompat.LoadCorrections(_LoadCorrections, validationTables) end
 
     local patchCount = 0
     QuestieDB.requiredItemConditionQuestIds = {}
@@ -320,15 +151,7 @@ function QuestieCorrections:Initialize(validationTables)
 end
 
 local WAYPOINT_MIN_DISTANCE = 1.5 -- todo: make this a config value maybe?
-local ZONE_SCALES = {
-    [ZoneDB.zoneIDs.STORMWIND_CITY] = 0.5,
-    [ZoneDB.zoneIDs.IRONFORGE] = 0.5,
-    [ZoneDB.zoneIDs.TELDRASSIL] = 0.5,
-
-    [ZoneDB.zoneIDs.ORGRIMMAR] = 0.5,
-    [ZoneDB.zoneIDs.THUNDER_BLUFF] = 0.5,
-    [ZoneDB.zoneIDs.UNDERCITY] = 0.5,
-}
+local ZONE_SCALES
 
 
 local abs, sqrt = math.abs, math.sqrt
@@ -339,6 +162,16 @@ local function euclid(x, y, i, e)
 end
 
 function QuestieCorrections:OptimizeWaypoints(waypointData)
+    if not ZONE_SCALES then
+        ZONE_SCALES = {
+            [ZoneDB.zoneIDs.STORMWIND_CITY] = 0.5,
+            [ZoneDB.zoneIDs.IRONFORGE] = 0.5,
+            [ZoneDB.zoneIDs.TELDRASSIL] = 0.5,
+            [ZoneDB.zoneIDs.ORGRIMMAR] = 0.5,
+            [ZoneDB.zoneIDs.THUNDER_BLUFF] = 0.5,
+            [ZoneDB.zoneIDs.UNDERCITY] = 0.5,
+        }
+    end
     local newWaypointZones = {}
     for zone, waypointList in pairs(waypointData) do
         local newWaypointList = {}

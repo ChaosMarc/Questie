@@ -14,8 +14,6 @@ local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
 local QuestieReputation = QuestieLoader:ImportModule("QuestieReputation")
 ---@type QuestieCorrections
 local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
----@type QuestieQuestBlacklist
-local QuestieQuestBlacklist = QuestieLoader:ImportModule("QuestieQuestBlacklist")
 ---@type QuestieEvent
 local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
 ---@type QuestieLink
@@ -234,18 +232,18 @@ function _QuestieJourney.questsByFaction:InitializeFactionQuestData()
     _EnsureFactionQuestData()
 end
 
-local function _AddQuestToFaction(factionId, questId)
+local function _AddQuestToFaction(questMap, factionId, questId)
     if not factionId or not questId then
         return
     end
 
     _EnsureFactionRegistered(factionId)
 
-    if not factionQuestMap[factionId] then
-        factionQuestMap[factionId] = {}
+    if not questMap[factionId] then
+        questMap[factionId] = {}
     end
 
-    factionQuestMap[factionId][questId] = true
+    questMap[factionId][questId] = true
 end
 
 function _EnsureFactionQuestData()
@@ -253,11 +251,11 @@ function _EnsureFactionQuestData()
         return
     end
 
-    factionQuestMap = {}
+    local questMap = {}
     local refs = referencedFactionIds or {}
     local shouldCollectReferences = not referencedFactionIds
 
-    local HIDE_ON_MAP = QuestieQuestBlacklist.HIDE_ON_MAP
+    local HIDE_ON_MAP = QuestieCorrections.HIDE_ON_MAP
     local hiddenQuests = QuestieCorrections.hiddenQuests
 
     local queryFields = {
@@ -302,22 +300,23 @@ function _EnsureFactionQuestData()
             -- Filter out hidden quests
             if hiddenQuests and (((not hiddenQuests[questId]) or hiddenQuests[questId] == HIDE_ON_MAP) or QuestieEvent:IsEventQuest(questId)) then
                 if requiredMinRep then
-                    _AddQuestToFaction(requiredMinRep[1], questId)
+                    _AddQuestToFaction(questMap, requiredMinRep[1], questId)
                 end
 
                 if requiredMaxRep then
-                    _AddQuestToFaction(requiredMaxRep[1], questId)
+                    _AddQuestToFaction(questMap, requiredMaxRep[1], questId)
                 end
 
                 if reputationReward then
                     for _, factionPair in pairs(reputationReward) do
-                        _AddQuestToFaction(factionPair[1], questId)
+                        _AddQuestToFaction(questMap, factionPair[1], questId)
                     end
                 end
             end
         end
     end
 
+    factionQuestMap = questMap
     QuestieJourney.factionMap = factionQuestMap
     if shouldCollectReferences then
         referencedFactionIds = refs
@@ -340,8 +339,8 @@ function _QuestieJourney.questsByFaction:ManageTree(container, factionTree)
     factionTreeFrame = AceGUI:Create("TreeGroup")
     factionTreeFrame:SetFullWidth(true)
     factionTreeFrame:SetFullHeight(true)
+    factionTreeFrame:SetAutoAdjustHeight(false)
     factionTreeFrame:EnableButtonTooltips(false)
-    factionTreeFrame:SetTree(factionTree)
 
     factionTreeFrame.treeframe:SetWidth(415)
     factionTreeFrame:SetCallback("OnClick", function(group, ...)
@@ -381,6 +380,7 @@ function _QuestieJourney.questsByFaction:ManageTree(container, factionTree)
     end)
 
     container:AddChild(factionTreeFrame)
+    factionTreeFrame:SetTree(factionTree)
 end
 
 ---Build the quest tree for a faction grouping
@@ -436,7 +436,7 @@ function _QuestieJourney.questsByFaction:CollectFactionQuests(factionId)
     local breadcrumbCounter = 0
     local hiddenCounter = 0
 
-    local HIDE_ON_MAP = QuestieQuestBlacklist.HIDE_ON_MAP
+    local HIDE_ON_MAP = QuestieCorrections.HIDE_ON_MAP
     local hiddenQuests = QuestieCorrections.hiddenQuests
     local DoableStates = QuestieDB.DoableStates
 
@@ -708,13 +708,13 @@ function _QuestieJourney.questsByFaction:CollectFactionQuests(factionId)
             end
 
             -- AQ War Effort quests (one-time world event that has ended for all realms)
-            if QuestieQuestBlacklist.AQWarEffortQuests[questId] then
+            if QuestieCorrections.AQWarEffortQuests[questId] then
                 tinsert(factionTree[6].children, temp)
                 unobtainableCounter = unobtainableCounter + 1
             end
 
-            -- Scourge Invasion quests (Acore worldstate event)
-            if QuestieQuestBlacklist.ScourgeInvasionQuests[questId] then
+            -- Scourge Invasion quests can be gated by the provider's world event.
+            if QuestieCorrections.ScourgeInvasionQuests[questId] then
                 tinsert(factionTree[6].children, temp)
                 unobtainableCounter = unobtainableCounter + 1
             end

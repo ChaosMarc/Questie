@@ -11,23 +11,23 @@ NPC_FIELD_RE = re.compile(r"^\[(npcKeys\.(?:questStarts|questEnds))\]\s*=\s*(.+)
 OBJECT_FIELD_RE = re.compile(r"^\[(objectKeys\.(?:questStarts|questEnds))\]\s*=\s*(.+)$", re.DOTALL)
 
 DEFAULT_QUEST_FIXES = [
-    "Database/Corrections/classicQuestFixes.lua",
-    "Database/Corrections/tbcQuestFixes.lua",
-    "Database/Corrections/wotlkQuestFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/classicQuestFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/tbcQuestFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/wotlkQuestFixes.lua",
 ]
 DEFAULT_NPC_FIXES = [
-    "Database/Corrections/classicNPCFixes.lua",
-    "Database/Corrections/tbcNPCFixes.lua",
-    "Database/Corrections/wotlkNPCFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/classicNPCFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/tbcNPCFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/wotlkNPCFixes.lua",
 ]
 DEFAULT_OBJECT_FIXES = [
-    "Database/Corrections/classicObjectFixes.lua",
-    "Database/Corrections/tbcObjectFixes.lua",
-    "Database/Corrections/wotlkObjectFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/classicObjectFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/tbcObjectFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/wotlkObjectFixes.lua",
 ]
-ACORE_QUEST_FIXES = ["Compat/AzerothCoreQuestCorrections.lua"]
-ACORE_NPC_FIXES = ["Compat/AzerothCoreNPCCorrections.lua"]
-ACORE_OBJECT_FIXES = ["Compat/AzerothCoreObjectCorrections.lua"]
+ACORE_QUEST_FIXES = ["Questie-335_AzerothCore/Compat/AzerothCoreQuestCorrections.lua"]
+ACORE_NPC_FIXES = ["Questie-335_AzerothCore/Compat/AzerothCoreNPCCorrections.lua"]
+ACORE_OBJECT_FIXES = ["Questie-335_AzerothCore/Compat/AzerothCoreObjectCorrections.lua"]
 QUEST_CORRECTION_TABLE_MARKERS = [
     "return {",
     "local relationCorrections = ",
@@ -566,9 +566,9 @@ def build_lua_suggestions(entity_kind, entries):
 
 def main():
     parser = argparse.ArgumentParser(description="Validate reverse NPC/object quest links against effective Questie quest relations.")
-    parser.add_argument("--quest-db", default="Database/Wotlk/wotlkQuestDB.lua")
-    parser.add_argument("--npc-db", default="Database/Wotlk/wotlkNpcDB.lua")
-    parser.add_argument("--object-db", default="Database/Wotlk/wotlkObjectDB.lua")
+    parser.add_argument("--quest-db", default="Questie-335_AzerothCore/Database/Wotlk/wotlkQuestDB.lua")
+    parser.add_argument("--npc-db", default="Questie-335_AzerothCore/Database/Wotlk/wotlkNpcDB.lua")
+    parser.add_argument("--object-db", default="Questie-335_AzerothCore/Database/Wotlk/wotlkObjectDB.lua")
     parser.add_argument(
         "--quest-fixes",
         nargs="*",

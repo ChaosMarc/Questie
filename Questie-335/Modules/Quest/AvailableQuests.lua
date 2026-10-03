@@ -15,8 +15,6 @@ local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
 local QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips")
 ---@type QuestieCorrections
 local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
----@type QuestieQuestBlacklist
-local QuestieQuestBlacklist = QuestieLoader:ImportModule("QuestieQuestBlacklist")
 ---@type IsleOfQuelDanas
 local IsleOfQuelDanas = QuestieLoader:ImportModule("IsleOfQuelDanas")
 ---@type QuestieLib
@@ -99,7 +97,7 @@ local function _ShouldTrackNpcAvailability(questId)
 end
 
 local function _ShouldRegisterQuestStartTooltip(questId)
-    return not QuestieDB:HasAzerothCoreLocationCondition(questId) or QuestieDB:IsAzerothCoreAvailabilityConditionFulfilled(questId)
+    return not QuestieDB:HasProviderLocationCondition(questId) or QuestieDB:IsProviderAvailabilityConditionFulfilled(questId)
 end
 
 local function _ApplyRefreshSpeed(useFastRefresh)
@@ -856,7 +854,7 @@ end
 ---@return boolean
 local function _ShouldCacheUnavailableQuest(questId)
     return (QuestieDB.IsDailyQuest(questId) or QuestieDB.IsWeeklyQuest(questId))
-        and QuestieDB:IsAzerothCoreAvailabilityConditionFulfilled(questId)
+        and QuestieDB:IsProviderAvailabilityConditionFulfilled(questId)
         and QuestieDB.IsDoable(questId)
         and _CanNpcOfferQuestToPlayer(questId)
 end
@@ -1099,9 +1097,9 @@ _CalculateAvailableQuests = function()
 
     local currentQuestlog = QuestiePlayer.currentQuestlog
     local currentIsleOfQuelDanasQuests = IsleOfQuelDanas.quests[Questie.db.profile.isleOfQuelDanasPhase] or {}
-    local aqWarEffortQuests = QuestieQuestBlacklist.AQWarEffortQuests
-    local scourgeInvasionQuests = QuestieQuestBlacklist.ScourgeInvasionQuests
-    local sunsReachQuests = QuestieQuestBlacklist.SunsReachQuests
+    local aqWarEffortQuests = QuestieCorrections.AQWarEffortQuests
+    local scourgeInvasionQuests = QuestieCorrections.ScourgeInvasionQuests
+    local sunsReachQuests = QuestieCorrections.SunsReachQuests
 
     QuestieDB.activeChildQuests = {} -- Reset here so we don't need to keep track in the quest event system
 
@@ -1437,7 +1435,7 @@ _AddStarter = function(starter, quest, tooltipKey, limit)
     local visibleStarterZones = {}
     for zone, spawns in pairs(starter.spawns or {}) do
         local alreadyAddedSpawns = {}
-        if zone and spawns and QuestieDB:IsAzerothCoreAvailabilityConditionFulfilledForSpawnZone(quest.Id, zone) then
+        if zone and spawns and QuestieDB:IsProviderAvailabilityConditionFulfilledForSpawnZone(quest.Id, zone) then
             local coords
             for spawnIndex = 1, #spawns do
                 coords = spawns[spawnIndex]
@@ -1491,7 +1489,7 @@ _AddStarter = function(starter, quest, tooltipKey, limit)
     -- Only for NPCs since objects do not move
     if starter.waypoints then
         for zone, waypoints in pairs(starter.waypoints or {}) do
-            if QuestieDB:IsAzerothCoreAvailabilityConditionFulfilledForSpawnZone(quest.Id, zone) and
+            if QuestieDB:IsProviderAvailabilityConditionFulfilledForSpawnZone(quest.Id, zone) and
                 (visibleStarterZones[zone] or (not starter.spawns) or (not starter.spawns[zone]) or _HasVisibleSpawnInZone(starter.spawns[zone])) and
                 (not dungeons[zone]) and waypoints[1] and waypoints[1][1] and waypoints[1][1][1] then
                 if not starterIcons[zone] then

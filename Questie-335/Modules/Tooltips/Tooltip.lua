@@ -12,6 +12,8 @@ local QuestieLib = QuestieLoader:ImportModule("QuestieLib");
 local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer");
 ---@type QuestieDB
 local QuestieDB = QuestieLoader:ImportModule("QuestieDB");
+---@type DropDB
+local DropDB = QuestieLoader:ImportModule("DropDB")
 ---@type QuestieEvent
 local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
 ---@type l10n
@@ -548,14 +550,17 @@ function QuestieTooltips:GetTooltip(key, playerZone)
                             if Questie.db.profile.debugEnabled and dropRateData and dropRateData[2] then
                                 if dropRateData[2] == "cmangos" then
                                     dropIcon = "|T" .. dropIconPath .. "cmangos.blp:" .. dropIconSize .. "|t "
-                                elseif dropRateData[2] == "azerothcore" then
-                                    dropIcon = "|T" .. dropIconPath .. "azerothcore.blp:" .. dropIconSize .. "|t "
                                 elseif dropRateData[2] == "mangos3" then
                                     dropIcon = "|T" .. dropIconPath .. "mangos3.blp:" .. dropIconSize .. "|t "
                                 elseif dropRateData[2] == "wowhead" then
                                     dropIcon = "|T" .. dropIconPath .. "wowhead.blp:" .. dropIconSize .. "|t "
                                 elseif dropRateData[2] == "questie" then
                                     dropIcon = "|T" .. dropIconPath .. "questie_flat.blp:" .. dropIconSize .. "|t "
+                                else
+                                    local providerIcon = DropDB.GetSourceIconName(dropRateData[2])
+                                    if providerIcon then
+                                        dropIcon = "|T" .. dropIconPath .. providerIcon .. ":" .. dropIconSize .. "|t "
+                                    end
                                 end
                             end
                             dropRateText = "  |cFF999999" .. dropIcon .. "[" .. FormatDropText(dropRateData[1]) .. "%]|r";

@@ -116,7 +116,7 @@ def main():
     )
     parser.add_argument(
         "--output",
-        default=Path("Compat/AzerothCoreCorrections.lua"),
+        default=Path("Questie-335_AzerothCore/Compat/AzerothCoreQuestCorrections.lua"),
         type=Path,
         help="Path to the addon module to write.",
     )

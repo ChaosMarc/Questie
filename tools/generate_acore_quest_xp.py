@@ -13,7 +13,7 @@ from validate_acore_quest_metadata import load_acore_sql_table  # noqa: E402
 
 
 CSV_COLUMNS = ["ID", *[f"Difficulty_{index}" for index in range(1, 11)]]
-DEFAULT_OUTPUT = Path("Database/QuestXP/DB/xpDB-azerothcore-wotlk.lua")
+DEFAULT_OUTPUT = Path("Questie-335_AzerothCore/Database/QuestXP/DB/xpDB-azerothcore-wotlk.lua")
 QUEST_XP_AURA = 291
 ITEM_SPELLTRIGGER_ON_EQUIP = 1
 

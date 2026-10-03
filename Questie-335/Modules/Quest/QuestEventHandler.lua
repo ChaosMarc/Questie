@@ -68,25 +68,25 @@ local questLogUpdateQueueSize = 1
 local deletedQuestItem = false
 local requiredItemConditionStates = {}
 local requiredItemConditionUpdatePending = false
-local acoreAuraConditionStates = {}
-local acoreAuraConditionUpdatePending = false
-local acoreLocationConditionStates = {}
-local acoreLocationConditionUpdatePending = false
+local providerAuraConditionStates = {}
+local providerAuraConditionUpdatePending = false
+local providerLocationConditionStates = {}
+local providerLocationConditionUpdatePending = false
 local itemRegressionConfirmationPending = false
 local GetCursorInfo = GetCursorInfo
 
 local function CacheRequiredItemConditionStates()
-    QuestieDB:InitializeAzerothCoreAvailabilityConditionIndexes()
+    QuestieDB:InitializeProviderAvailabilityConditionIndexes()
     for questId in pairs(QuestieDB.requiredItemConditionQuestIds) do
         requiredItemConditionStates[questId] = QuestieDB:GetAvailabilityItemConditionState(questId)
     end
 
-    for questId in pairs(QuestieDB.acoreAuraConditionQuestIds) do
-        acoreAuraConditionStates[questId] = QuestieDB.IsDoable(questId)
+    for questId in pairs(QuestieDB.providerAuraConditionQuestIds) do
+        providerAuraConditionStates[questId] = QuestieDB.IsDoable(questId)
     end
 
-    for questId in pairs(QuestieDB.acoreLocationConditionQuestIds) do
-        acoreLocationConditionStates[questId] = QuestieDB.IsDoable(questId)
+    for questId in pairs(QuestieDB.providerLocationConditionQuestIds) do
+        providerLocationConditionStates[questId] = QuestieDB.IsDoable(questId)
     end
 end
 
@@ -583,19 +583,19 @@ function _QuestEventHandler:BagUpdate()
 end
 
 function _QuestEventHandler:AuraUpdate()
-    if acoreAuraConditionUpdatePending then
+    if providerAuraConditionUpdatePending then
         return
     end
 
-    acoreAuraConditionUpdatePending = true
+    providerAuraConditionUpdatePending = true
     C_Timer.After(0.10, function()
-        acoreAuraConditionUpdatePending = false
+        providerAuraConditionUpdatePending = false
         local availabilityChanged = false
 
-        for questId in pairs(QuestieDB.acoreAuraConditionQuestIds) do
+        for questId in pairs(QuestieDB.providerAuraConditionQuestIds) do
             local isDoable = QuestieDB.IsDoable(questId)
-            if acoreAuraConditionStates[questId] ~= isDoable then
-                acoreAuraConditionStates[questId] = isDoable
+            if providerAuraConditionStates[questId] ~= isDoable then
+                providerAuraConditionStates[questId] = isDoable
                 availabilityChanged = true
             end
         end
@@ -607,19 +607,19 @@ function _QuestEventHandler:AuraUpdate()
 end
 
 function _QuestEventHandler:LocationUpdate()
-    if acoreLocationConditionUpdatePending then
+    if providerLocationConditionUpdatePending then
         return
     end
 
-    acoreLocationConditionUpdatePending = true
+    providerLocationConditionUpdatePending = true
     C_Timer.After(0.10, function()
-        acoreLocationConditionUpdatePending = false
+        providerLocationConditionUpdatePending = false
         local availabilityChanged = false
 
-        for questId in pairs(QuestieDB.acoreLocationConditionQuestIds) do
+        for questId in pairs(QuestieDB.providerLocationConditionQuestIds) do
             local isDoable = QuestieDB.IsDoable(questId)
-            if acoreLocationConditionStates[questId] ~= isDoable then
-                acoreLocationConditionStates[questId] = isDoable
+            if providerLocationConditionStates[questId] ~= isDoable then
+                providerLocationConditionStates[questId] = isDoable
                 availabilityChanged = true
             end
         end
@@ -658,7 +658,7 @@ function _QuestEventHandler:OnEvent(event, ...)
         _QuestEventHandler:LocationUpdate()
     elseif event == "SPELLS_CHANGED" then
         Questie.Debug(Questie.DEBUG_DEVELOP, "[EVENT] SPELLS_CHANGED (QuestEventHandler)")
-        -- AzerothCore can also use learned spells as quest availability
+        -- Database providers can also use learned spells as quest availability
         -- conditions (for example, Cold Weather Flying).
         AvailableQuests.CalculateAndDrawAll()
     elseif event == "CURRENCY_DISPLAY_UPDATE" then

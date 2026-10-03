@@ -3,7 +3,6 @@
 
     <Script file="Compat.lua"/>
     <Script file="Stream.lua"/>
-    <Script file="Corrections.lua"/>
     <Script file="FactionId.lua"/>
     <Script file="QuestTag.lua"/>
     <Script file="QuestReward.lua"/>
@@ -16,10 +15,4 @@
     <Script file="HBD.lua"/>
     <Script file="UI.lua"/>
     <Script file="Tracker.lua"/>
-    <Script file="AzerothCoreReputationRates.lua"/>
-    <Script file="AzerothCoreQuestAvailabilityConditions.lua"/>
-    <Script file="AzerothCoreQuestCorrections.lua"/>
-    <Script file="AzerothCoreItemCorrections.lua"/>
-    <Script file="AzerothCoreNPCCorrections.lua"/>
-    <Script file="AzerothCoreObjectCorrections.lua"/>
 </Ui>

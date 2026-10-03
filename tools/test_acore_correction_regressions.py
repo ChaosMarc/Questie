@@ -189,7 +189,7 @@ class AcoreCorrectionRegressionTests(unittest.TestCase):
         self.assertEqual({1: {"spawns": {9999: [[50.0, 50.0]]}}}, corrections)
 
     def test_wdm_validator_loads_world_and_instance_tables(self):
-        ui_map_data = Path(__file__).resolve().parents[1] / "Compat/UiMapData.lua"
+        ui_map_data = Path(__file__).resolve().parents[1] / "Questie-335/Compat/UiMapData.lua"
 
         self.assertIn(98, wdm_validator.load_wdm_rows(ui_map_data, "wdmWorldMapData"))
         self.assertEqual(
@@ -300,7 +300,7 @@ class AcoreCorrectionRegressionTests(unittest.TestCase):
         addon_root = Path(__file__).resolve().parents[1]
         constants = quest_validator.load_constants(addon_root)
         corrections = quest_validator.load_questie_correction_file(
-            addon_root / "Database/Corrections/tbcQuestFixes.lua",
+            addon_root / "Questie-335_AzerothCore/Database/Corrections/tbcQuestFixes.lua",
             constants,
         )
 

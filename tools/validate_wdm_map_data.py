@@ -220,7 +220,7 @@ def main():
     parser.add_argument("--wdm-root", default=Path(r"E:\downloads\WDM stuff"), type=Path)
     args = parser.parse_args()
 
-    ui_map_data_path = args.addon_root.resolve() / "Compat/UiMapData.lua"
+    ui_map_data_path = args.addon_root.resolve() / "Questie-335/Compat/UiMapData.lua"
     world_map_area_path = args.wdm_root.resolve() / "patch-enUS-N extracted/DBFilesClient/WorldMapArea.csv"
     dungeon_map_path = args.wdm_root.resolve() / "patch-enUS-M extracted/DBFilesClient/DungeonMap.csv"
     world_rows = load_wdm_rows(ui_map_data_path, "wdmWorldMapData")

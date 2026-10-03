@@ -61,6 +61,9 @@ end
 function Questie:RefreshConfig(_, db, profileName)
     Questie:SetIcons()
     MinimapIcon:Refresh()
+    if Questie.noDatabase then
+        return
+    end
     QuestieQuest:SmoothReset()
     TrackerBaseFrame:OnProfileChange()
     CommsVisibility:ScheduleSnapshot("PROFILE_CHANGED")

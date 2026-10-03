@@ -16,29 +16,14 @@ local GetMaxPlayerLevel = QuestieCompat.GetMaxPlayerLevel
 local GetQuestLogRewardMoney = QuestieCompat.GetQuestLogRewardMoney
 
 local floor = floor
-local GetInventoryItemID = GetInventoryItemID
 local UnitLevel = UnitLevel
 
-local FIRST_EQUIPMENT_SLOT = 1
-local LAST_EQUIPMENT_SLOT = 19
+function QuestXP.GetEquippedQuestXPMultiplier()
+    return 1
+end
 
----@return number multiplier
-local function getEquippedQuestXPMultiplier()
-    local multiplier = 1
-
-    for inventorySlot = FIRST_EQUIPMENT_SLOT, LAST_EQUIPMENT_SLOT do
-        local itemId = GetInventoryItemID("player", inventorySlot)
-        local bonuses = itemId and QuestXP.itemQuestXPBonuses[itemId]
-        if bonuses then
-            for _, bonusPercent in ipairs(bonuses) do
-                -- AzerothCore's GetTotalAuraMultiplier applies each percentage
-                -- to the accumulated multiplier.
-                multiplier = multiplier * (1 + bonusPercent / 100)
-            end
-        end
-    end
-
-    return multiplier
+function QuestXP.ResolveQuestLevel(level)
+    return level
 end
 
 ---@param xp XP
@@ -73,7 +58,7 @@ local function getAdjustedXP(xp, qLevel, ignorePlayerLevel, ignoreQuestXPModifie
     end
 
     if not ignoreQuestXPModifiers then
-        xp = xp * getEquippedQuestXPMultiplier()
+        xp = xp * QuestXP.GetEquippedQuestXPMultiplier()
     end
 
     return floor(xp)
@@ -91,10 +76,7 @@ function QuestXP:GetQuestLogRewardXP(questId, ignorePlayerLevel, ignoreQuestXPMo
         local level = questData[1]
         local rewardDifficulty = questData[2]
 
-        -- AzerothCore uses the player's current level for quests with QuestLevel -1.
-        if level == -1 then
-            level = UnitLevel("player")
-        end
+        level = QuestXP.ResolveQuestLevel(level)
 
         local levelRewards = QuestXP.xpByLevel[level]
         local xp = levelRewards and levelRewards[rewardDifficulty + 1]

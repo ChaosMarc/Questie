@@ -1,0 +1,67 @@
+## Interface: 30300
+## Title: Questie-335 AzerothCore Database
+## Notes: AzerothCore WotLK database for Questie-335
+## Version: 9.9.4-335
+## RequiredDeps: Questie-335
+
+Database\Wotlk\wotlkItemDB.lua
+Database\Wotlk\wotlkNpcDB.lua
+Database\Wotlk\wotlkObjectDB.lua
+Database\Wotlk\wotlkQuestDB.lua
+Database\Zones\zoneTables.lua
+Database\Wotlk\AzerothCoreProvider.lua
+Database\QuestieDBData.lua
+Database\QuestTagCorrections.lua
+Database\Constants.lua
+Database\MeetingStones.lua
+Database\Mailboxes.lua
+Database\ClassTrainers.lua
+Database\ProfessionTrainers.lua
+Database\InstanceLocations.lua
+Database\QuestieEventData.lua
+Database\DailyQuestHubs.lua
+
+Database\Corrections\AutoTableUpdates.lua
+Database\Corrections\QuestieItemBlacklist.lua
+Database\Corrections\QuestieNPCBlacklist.lua
+Database\Corrections\QuestieQuestBlacklist.lua
+Database\Corrections\Automatic\itemStartFixes.lua
+Database\Corrections\Automatic\classicQuestReputationFixes.lua
+Database\Corrections\classicQuestFixes.lua
+Database\Corrections\classicNPCFixes.lua
+Database\Corrections\classicItemFixes.lua
+Database\Corrections\classicObjectFixes.lua
+Database\Corrections\tbcQuestFixes.lua
+Database\Corrections\tbcNPCFixes.lua
+Database\Corrections\tbcItemFixes.lua
+Database\Corrections\tbcObjectFixes.lua
+Database\Corrections\wotlkQuestFixes.lua
+Database\Corrections\wotlkNPCFixes.lua
+Database\Corrections\wotlkItemFixes.lua
+Database\Corrections\wotlkObjectFixes.lua
+Compat\Corrections.lua
+Database\Corrections\AzerothCoreCorrections.lua
+
+Localization\lookups\lookupQuestCategories.lua
+Localization\lookups\lookupZones.lua
+Localization\lookups\lookupOverrides.lua
+Localization\lookups\Wotlk\lookupItems\lookupItems.xml
+Localization\lookups\Wotlk\lookupNpcs\lookupNpcs.xml
+Localization\lookups\Wotlk\lookupObjects\lookupObjects.xml
+Localization\lookups\Wotlk\lookupQuests\lookupQuests.xml
+
+Database\QuestXP\DB\xpDB-azerothcore-wotlk.lua
+Database\QuestXP\AzerothCoreXP.lua
+Database\DropTables\data\wotlkAcoreItemDrops.lua
+Database\DropTables\AzerothCoreDrops.lua
+
+Compat\AzerothCoreReputationRates.lua
+Database\ReputationRates.lua
+Compat\AzerothCoreQuestAvailabilityConditions.lua
+Database\QuestCompletion.lua
+Database\AvailabilityConditions.lua
+Compat\AzerothCorePhasing.lua
+Compat\AzerothCoreQuestCorrections.lua
+Compat\AzerothCoreItemCorrections.lua
+Compat\AzerothCoreNPCCorrections.lua
+Compat\AzerothCoreObjectCorrections.lua

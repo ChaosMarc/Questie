@@ -1,3 +1,4 @@
+-- AzerothCore-specific quest and NPC correction registrations.
 ---@type QuestieDB
 local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
 

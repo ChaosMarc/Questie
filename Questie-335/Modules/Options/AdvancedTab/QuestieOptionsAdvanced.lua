@@ -276,7 +276,7 @@ function QuestieOptions.tabs.advanced:Initialize()
             github_text = {
                 type = "description",
                 order = 4.8,
-                name = function() return Questie:Colorize(l10n('Questie-335 is under active development for World of Warcraft: Wotlk 3.3.5a, targeting AzerothCore for data accuracy. Please check GitHub for the latest changes or to report issues.'), 'purple'); end,
+                name = function() return Questie:Colorize(l10n('Questie-335 supports optional database addons. Without a database addon, settings remain available but quest data is not shown.'), 'purple'); end,
                 fontSize = "medium",
             },
             HeaderDev = {

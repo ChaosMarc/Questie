@@ -30,6 +30,21 @@ function QuestieSlash.RegisterSlashCommands()
     Questie:RegisterChatCommand("questie", QuestieSlash.HandleCommands)
 end
 
+function QuestieSlash.RegisterOptionsOnlySlashCommands()
+    local function openOptions(input)
+        if string.trim(input, " ") ~= "" then
+            Questie:Print("No Questie database provider loaded. Only /questie options are available.")
+            return
+        end
+        QuestieCombatQueue:Queue(function()
+            QuestieOptions:OpenConfigWindow()
+        end)
+    end
+
+    Questie:RegisterChatCommand("questieclassic", openOptions)
+    Questie:RegisterChatCommand("questie", openOptions)
+end
+
 function QuestieSlash.HandleCommands(input)
     input = string.trim(input, " ");
 

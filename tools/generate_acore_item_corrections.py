@@ -24,12 +24,12 @@ from validate_acore_quest_metadata import (  # noqa: E402
 
 
 ITEM_CORRECTION_FILES = [
-    "Database/Corrections/classicItemFixes.lua",
-    "Database/Corrections/tbcItemFixes.lua",
-    "Database/Corrections/wotlkItemFixes.lua",
-    "Database/Corrections/Automatic/itemStartFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/classicItemFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/tbcItemFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/wotlkItemFixes.lua",
+    "Questie-335_AzerothCore/Database/Corrections/Automatic/itemStartFixes.lua",
 ]
-ITEM_START_FIXES_FILE = "Database/Corrections/Automatic/itemStartFixes.lua"
+ITEM_START_FIXES_FILE = "Questie-335_AzerothCore/Database/Corrections/Automatic/itemStartFixes.lua"
 
 STATIC_FIELD_MAP = {
     "name": "name",
@@ -433,7 +433,7 @@ def apply_corrections(items, corrections, no_overwrites=False, no_new_entries=Fa
 
 
 def load_effective_questie_items(repo_root, item_keys):
-    items = load_questie_items(repo_root / "Database/Wotlk/wotlkItemDB.lua", item_keys)
+    items = load_questie_items(repo_root / "Questie-335_AzerothCore/Database/Wotlk/wotlkItemDB.lua", item_keys)
     for relative_path in ITEM_CORRECTION_FILES:
         path = repo_root / relative_path
         if not path.exists():
@@ -1567,7 +1567,7 @@ def main():
     parser = argparse.ArgumentParser(description="Generate Questie itemData corrections from AzerothCore 3.3.5 SQL data.")
     parser.add_argument("--acore-source", default=r"P:\AC\source", type=Path)
     parser.add_argument("--repo-root", default=Path("."), type=Path)
-    parser.add_argument("--output", default=Path("Compat/AzerothCoreItemCorrections.lua"), type=Path)
+    parser.add_argument("--output", default=Path("Questie-335_AzerothCore/Compat/AzerothCoreItemCorrections.lua"), type=Path)
     parser.add_argument("--report", default=Path("tools/reports/acore_item_corrections.md"), type=Path)
     parser.add_argument("--preservation-report", default=Path("tools/reports/acore_item_preservations.json"), type=Path)
     parser.add_argument("--include-modules", action="store_true", help="Also scan SQL under AzerothCore modules/. This can be slow.")
@@ -1582,9 +1582,9 @@ def main():
     args = parser.parse_args()
 
     repo_root = args.repo_root.resolve()
-    item_keys = parse_item_keys(repo_root / "Database/Wotlk/wotlkItemDB.lua")
+    item_keys = parse_item_keys(repo_root / "Questie-335_AzerothCore/Database/Wotlk/wotlkItemDB.lua")
     # Load the base Questie WotLK item DB (before applying local correction files)
-    questie_base_items = load_questie_items(repo_root / "Database/Wotlk/wotlkItemDB.lua", item_keys)
+    questie_base_items = load_questie_items(repo_root / "Questie-335_AzerothCore/Database/Wotlk/wotlkItemDB.lua", item_keys)
     # Load the effective Questie items after applying classic/tbc/wotlk corrections
     questie_items = load_effective_questie_items(repo_root, item_keys)
     item_start_fix_items = load_item_start_fix_items(repo_root, item_keys)

@@ -379,25 +379,25 @@ def build_lua_suggestions(targets):
 
 def main():
     parser = argparse.ArgumentParser(description="Validate item startQuest links against effective Questie quest startedBy item data.")
-    parser.add_argument("--quest-db", default="Database/Wotlk/wotlkQuestDB.lua")
-    parser.add_argument("--item-db", default="Database/Wotlk/wotlkItemDB.lua")
+    parser.add_argument("--quest-db", default="Questie-335_AzerothCore/Database/Wotlk/wotlkQuestDB.lua")
+    parser.add_argument("--item-db", default="Questie-335_AzerothCore/Database/Wotlk/wotlkItemDB.lua")
     parser.add_argument(
         "--quest-fixes",
         nargs="*",
         default=[
-            "Database/Corrections/classicQuestFixes.lua",
-            "Database/Corrections/tbcQuestFixes.lua",
-            "Database/Corrections/wotlkQuestFixes.lua",
+            "Questie-335_AzerothCore/Database/Corrections/classicQuestFixes.lua",
+            "Questie-335_AzerothCore/Database/Corrections/tbcQuestFixes.lua",
+            "Questie-335_AzerothCore/Database/Corrections/wotlkQuestFixes.lua",
         ],
     )
     parser.add_argument(
         "--item-fixes",
         nargs="*",
         default=[
-            "Database/Corrections/classicItemFixes.lua",
-            "Database/Corrections/tbcItemFixes.lua",
-            "Database/Corrections/wotlkItemFixes.lua",
-            "Database/Corrections/Automatic/itemStartFixes.lua",
+            "Questie-335_AzerothCore/Database/Corrections/classicItemFixes.lua",
+            "Questie-335_AzerothCore/Database/Corrections/tbcItemFixes.lua",
+            "Questie-335_AzerothCore/Database/Corrections/wotlkItemFixes.lua",
+            "Questie-335_AzerothCore/Database/Corrections/Automatic/itemStartFixes.lua",
         ],
     )
     parser.add_argument("--report", help="Optional path to write the full JSON report")

@@ -403,8 +403,8 @@ def write_coverage_report(relevant_item_ids, per_item, skipped_stats, output_pat
 def main():
     parser = argparse.ArgumentParser(description="Generate AzerothCore creature quest-item drop rates for Questie.")
     parser.add_argument("--acore-source", default=r"P:\AC\source")
-    parser.add_argument("--output", default="Database/DropTables/data/wotlkAcoreItemDrops.lua")
-    parser.add_argument("--item-db", default="Database/Wotlk/wotlkItemDB.lua")
+    parser.add_argument("--output", default="Questie-335_AzerothCore/Database/DropTables/data/wotlkAcoreItemDrops.lua")
+    parser.add_argument("--item-db", default="Questie-335_AzerothCore/Database/Wotlk/wotlkItemDB.lua")
     parser.add_argument("--coverage-report", default="tools/reports/acore_creature_drop_coverage.json")
     parser.add_argument("--include-modules", action="store_true", help="Also scan SQL under AzerothCore modules/. This can be slow.")
     args = parser.parse_args()

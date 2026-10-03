@@ -31,9 +31,6 @@ local areaIdToUiMapId = ZoneDB.private.areaIdToUiMapId or {}
 local specialZoneIdToUiMapId = ZoneDB.private.specialZoneIdToUiMapId or {}
 local wdmInstanceFloorZoneIdToUiMapId = ZoneDB.private.wdmInstanceFloorZoneIdToUiMapId or {}
 local wdmInstanceFloorUiMapIdToZoneId = {}
-for zoneId, uiMapId in pairs(wdmInstanceFloorZoneIdToUiMapId) do
-    wdmInstanceFloorUiMapIdToZoneId[uiMapId] = zoneId
-end
 local uiMapIdToAreaId = ZoneDB.private.uiMapIdToAreaId or {}
 local dungeons = ZoneDB.private.dungeons or {}
 local dungeonLocations = ZoneDB.private.dungeonLocations or {}
@@ -61,6 +58,22 @@ local UiMapIdOverrides = {
 }
 local parentZoneToSubZone = {} -- Generated
 local zoneMap = {} -- Generated
+
+function ZoneDB:BindProviderData()
+    _ZoneDB = ZoneDB.private
+    areaIdToUiMapId = _ZoneDB.areaIdToUiMapId
+    specialZoneIdToUiMapId = _ZoneDB.specialZoneIdToUiMapId
+    wdmInstanceFloorZoneIdToUiMapId = _ZoneDB.wdmInstanceFloorZoneIdToUiMapId
+    uiMapIdToAreaId = _ZoneDB.uiMapIdToAreaId
+    dungeons = _ZoneDB.dungeons
+    dungeonLocations = _ZoneDB.dungeonLocations
+    dungeonParentZones = _ZoneDB.dungeonParentZones
+    subZoneToParentZone = _ZoneDB.subZoneToParentZone
+    ZoneDB.zoneIDs = _ZoneDB.zoneIDs
+    for zoneId, uiMapId in pairs(wdmInstanceFloorZoneIdToUiMapId) do
+        wdmInstanceFloorUiMapIdToZoneId[uiMapId] = zoneId
+    end
+end
 
 
 function ZoneDB:Initialize()

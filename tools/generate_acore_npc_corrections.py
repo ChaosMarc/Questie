@@ -37,10 +37,10 @@ from generate_acore_item_corrections import (  # noqa: E402
 
 
 NPC_CORRECTION_FILES = [
-    ("Database/Corrections/classicNPCFixes.lua", ("QuestieNPCFixes:Load",)),
-    ("Database/Corrections/tbcNPCFixes.lua", ("QuestieTBCNpcFixes:Load",)),
+    ("Questie-335_AzerothCore/Database/Corrections/classicNPCFixes.lua", ("QuestieNPCFixes:Load",)),
+    ("Questie-335_AzerothCore/Database/Corrections/tbcNPCFixes.lua", ("QuestieTBCNpcFixes:Load",)),
     (
-        "Database/Corrections/wotlkNPCFixes.lua",
+        "Questie-335_AzerothCore/Database/Corrections/wotlkNPCFixes.lua",
         (
             "QuestieWotlkNpcFixes:LoadAutomatics",
             "QuestieWotlkNpcFixes:Load",
@@ -412,7 +412,7 @@ def npc_flag_constants():
 
 
 def parse_zone_ids(repo_root):
-    text = strip_lua_comments((repo_root / "Database/Zones/zoneTables.lua").read_text(encoding="utf-8"))
+    text = strip_lua_comments((repo_root / "Questie-335_AzerothCore/Database/Zones/zoneTables.lua").read_text(encoding="utf-8"))
     start = text.find("ZoneDB.private.zoneIDs")
     if start == -1:
         return {}
@@ -587,7 +587,7 @@ def apply_corrections(npcs, corrections):
 
 
 def load_effective_questie_npcs(repo_root, npc_keys, fields):
-    npcs = load_questie_npcs(repo_root / "Database/Wotlk/wotlkNpcDB.lua", npc_keys)
+    npcs = load_questie_npcs(repo_root / "Questie-335_AzerothCore/Database/Wotlk/wotlkNpcDB.lua", npc_keys)
     zone_constants = parse_zone_id_constants(repo_root)
     for relative_path, function_names in NPC_CORRECTION_FILES:
         path = repo_root / relative_path
@@ -657,7 +657,7 @@ def load_wdm_floor_thresholds(wdm_root):
 
 
 def parse_zone_maps(repo_root, wdm_root=None):
-    text = strip_lua_comments((repo_root / "Database/Zones/zoneTables.lua").read_text(encoding="utf-8"))
+    text = strip_lua_comments((repo_root / "Questie-335_AzerothCore/Database/Zones/zoneTables.lua").read_text(encoding="utf-8"))
     constants = parse_zone_id_constants(repo_root)
     constants.setdefault("ZoneDB.private.zoneIDs.BLACKROCK_SPIRE", constants.get("ZoneDB.private.zoneIDs.LOWER_BLACKROCK_SPIRE", 1583))
     constants.setdefault("zoneIDs.BLACKROCK_SPIRE", constants.get("zoneIDs.LOWER_BLACKROCK_SPIRE", 1583))
@@ -699,7 +699,7 @@ def parse_zone_maps(repo_root, wdm_root=None):
             if isinstance(area_id, int) and isinstance(row, list) and len(row) >= 3 and isinstance(row[2], int):
                 dungeon_parent_by_area[int(area_id)] = int(row[2])
 
-    ui_text = strip_lua_comments((repo_root / "Compat/UiMapData.lua").read_text(encoding="utf-8"))
+    ui_text = strip_lua_comments((repo_root / "Questie-335/Compat/UiMapData.lua").read_text(encoding="utf-8"))
     base_ui_map_data = parse_ui_map_tables(ui_text, r"(?:QuestieCompat\.)?UiMapData\s*=\s*\{")
     wdm_world_map_data = parse_ui_map_tables(ui_text, r"local\s+wdmWorldMapData\s*=\s*\{")
     wdm_instance_map_data = parse_ui_map_tables(ui_text, r"local\s+wdmInstanceMapData\s*=\s*\{")
@@ -1524,10 +1524,10 @@ def collect_quest_referenced_ids(repo_root, candidate_ids):
         return set()
 
     paths = [
-        repo_root / "Database/Wotlk/wotlkQuestDB.lua",
-        repo_root / "Database/Corrections/classicQuestFixes.lua",
-        repo_root / "Database/Corrections/tbcQuestFixes.lua",
-        repo_root / "Database/Corrections/wotlkQuestFixes.lua",
+        repo_root / "Questie-335_AzerothCore/Database/Wotlk/wotlkQuestDB.lua",
+        repo_root / "Questie-335_AzerothCore/Database/Corrections/classicQuestFixes.lua",
+        repo_root / "Questie-335_AzerothCore/Database/Corrections/tbcQuestFixes.lua",
+        repo_root / "Questie-335_AzerothCore/Database/Corrections/wotlkQuestFixes.lua",
     ]
     texts = []
     for path in paths:
@@ -1545,7 +1545,7 @@ def collect_quest_referenced_ids(repo_root, candidate_ids):
         if int(candidate_id) in referenced_numbers:
             referenced_ids.add(int(candidate_id))
 
-    item_db_path = repo_root / "Database/Wotlk/wotlkItemDB.lua"
+    item_db_path = repo_root / "Questie-335_AzerothCore/Database/Wotlk/wotlkItemDB.lua"
     if item_db_path.exists():
         item_keys = parse_item_keys(item_db_path)
         questie_items = load_effective_questie_items(repo_root, item_keys)
@@ -1751,7 +1751,7 @@ def main():
     parser = argparse.ArgumentParser(description="Generate Questie npcData corrections from AzerothCore 3.3.5 SQL data.")
     parser.add_argument("--acore-source", default=r"P:\AC\source", type=Path)
     parser.add_argument("--repo-root", default=Path("."), type=Path)
-    parser.add_argument("--output", default=Path("Compat/AzerothCoreNPCCorrections.lua"), type=Path)
+    parser.add_argument("--output", default=Path("Questie-335_AzerothCore/Compat/AzerothCoreNPCCorrections.lua"), type=Path)
     parser.add_argument("--report", default=Path("tools/reports/acore_npc_corrections.md"), type=Path)
     parser.add_argument(
         "--wdm-root",
@@ -1782,7 +1782,7 @@ def main():
     args = parser.parse_args()
 
     repo_root = args.repo_root.resolve()
-    npc_keys = parse_npc_keys(repo_root / "Database/Wotlk/wotlkNpcDB.lua")
+    npc_keys = parse_npc_keys(repo_root / "Questie-335_AzerothCore/Database/Wotlk/wotlkNpcDB.lua")
     unknown_fields = [field for field in args.fields if field not in npc_keys]
     if unknown_fields:
         raise ValueError(f"Unknown npcKeys fields: {unknown_fields}")
