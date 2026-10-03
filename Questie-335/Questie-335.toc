@@ -46,6 +46,7 @@ Database\Wotlk\wotlkNpcDB.lua
 Database\Wotlk\wotlkObjectDB.lua
 Database\Wotlk\wotlkQuestDB.lua
 Database\QuestieDB.lua
+Database\Provider.lua
 Database\questDB.lua
 Database\objectDB.lua
 Database\npcDB.lua
@@ -89,6 +90,7 @@ Database\DropTables\data\wotlkAcoreItemDrops.lua
 
 # Compiler
 Database\compiler.lua
+Database\Wotlk\AzerothCoreProvider.lua
 
 # Localization
 Localization\l10n.lua

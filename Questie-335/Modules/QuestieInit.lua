@@ -31,6 +31,8 @@ local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
 local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
 ---@type QuestieDB
 local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+---@type QuestieDBProvider
+local QuestieDBProvider = QuestieLoader:ImportModule("QuestieDBProvider")
 ---@type Cleanup
 local QuestieCleanup = QuestieLoader:ImportModule("Cleanup")
 ---@type DBCompiler
@@ -213,6 +215,7 @@ QuestieInit.Stages[1] = function() -- run as a coroutine
     coYield()
 
     local dbCompiled = false
+    local provider = QuestieDBProvider:GetActive()
 
     local dbIsCompiled, dbCompiledOnVersion, dbCompiledLang, dbCompiledSchemaVersion
 
@@ -222,7 +225,7 @@ QuestieInit.Stages[1] = function() -- run as a coroutine
     dbCompiledSchemaVersion = Questie.db.global.dbCompiledSchemaVersion
 
     -- Check if the DB needs to be recompiled
-    if (not dbIsCompiled) or (QuestieLib:GetAddonVersionString() ~= dbCompiledOnVersion) or (l10n:GetUILocale() ~= dbCompiledLang) or (dbCompiledSchemaVersion ~= QuestieDBCompiler.compiledSchemaVersion) or (Questie.db.global.dbCompiledExpansion ~= WOW_PROJECT_ID) then
+    if (not dbIsCompiled) or (QuestieLib:GetAddonVersionString() ~= dbCompiledOnVersion) or (l10n:GetUILocale() ~= dbCompiledLang) or (dbCompiledSchemaVersion ~= QuestieDBCompiler.compiledSchemaVersion) or (Questie.db.global.dbCompiledExpansion ~= WOW_PROJECT_ID) or (Questie.db.global.dbCompiledProviderID ~= provider.id) or (Questie.db.global.dbCompiledProviderVersion ~= provider.version) then
         Questie.Debug(Questie.DEBUG_DEVELOP, "[QuestieInit:Stage1] DB compile beginning.")
         print("\124cFFAAEEFF" .. l10n("Questie DB has updated!") .. "\124r\124cFFFF6F22 " .. l10n("Data is being processed, this may take a few moments and cause some lag..."))
         loadFullDatabase()
@@ -504,19 +507,17 @@ function QuestieInit.WaitForValidGameCache()
 end
 
 function QuestieInit:LoadDatabase(key)
-    if QuestieDB[key] then
-        coYield()
-        local func, err = loadstring(QuestieDB[key]) -- load the table from string (returns a function)
-        if (not func) then
-            Questie.Error("Failed to load database: ", key, err)
-            return
-        end
-        QuestieDB[key] = func
-        coYield()
-        QuestieDB[key] = QuestieDB[key]()           -- execute the function (returns the table)
-    else
-        Questie.Debug(Questie.DEBUG_DEVELOP, "Database is missing, this is likely do to era vs tbc: ", key)
+    local data = QuestieDBProvider:GetActive().GetRawData(key)
+    if type(data) ~= "string" then
+        error("Questie database provider did not supply " .. key)
     end
+    coYield()
+    local func, err = loadstring(data)
+    if not func then
+        error("Failed to load database " .. key .. ": " .. err)
+    end
+    coYield()
+    QuestieDB[key] = func()
 end
 
 function QuestieInit:LoadBaseDB()

@@ -5,6 +5,8 @@ local QuestieDBCompiler = QuestieLoader:CreateModule("DBCompiler")
 local QuestieStream = QuestieLoader:ImportModule("QuestieStreamLib"):GetStream("raw")
 ---@type QuestieDB
 local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+---@type QuestieDBProvider
+local QuestieDBProvider = QuestieLoader:ImportModule("QuestieDBProvider")
 ---@type QuestieLib
 local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
 ---@type l10n
@@ -1200,6 +1202,8 @@ function QuestieDBCompiler:Compile()
     Questie.db.global.dbCompiledOnVersion = QuestieLib:GetAddonVersionString()
     Questie.db.global.dbCompiledLang = l10n:GetUILocale()
     Questie.db.global.dbCompiledSchemaVersion = QuestieDBCompiler.compiledSchemaVersion
+    Questie.db.global.dbCompiledProviderID = QuestieDBProvider:GetActive().id
+    Questie.db.global.dbCompiledProviderVersion = QuestieDBProvider:GetActive().version
     Questie.db.global.dbIsCompiled = true
     Questie.db.global.dbCompiledCount = (Questie.db.global.dbCompiledCount or 0) + 1
 end
