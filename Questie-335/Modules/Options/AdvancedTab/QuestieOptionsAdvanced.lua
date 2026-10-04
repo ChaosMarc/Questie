@@ -17,11 +17,14 @@ local l10n = QuestieLoader:ImportModule("l10n")
 local QuestieJourney = QuestieLoader:ImportModule("QuestieJourney")
 ---@type QuestieProfiler
 local QuestieProfiler = QuestieLoader:ImportModule("Profiler")
+---@type QuestieDBProvider
+local QuestieDBProvider = QuestieLoader:ImportModule("QuestieDBProvider")
 
 QuestieOptions.tabs.advanced = {...}
 local optionsDefaults = QuestieOptionsDefaults:Load()
 local _GetLanguages
 local pendingLocaleSelection
+local pendingProviderSelection
 
 local function _GetAutomaticLocale()
     if QUESTIE_LOCALES_OVERRIDE ~= nil then
@@ -64,11 +67,65 @@ function QuestieOptions.tabs.advanced:Initialize()
         preferredIndex = 3
     }
 
+    StaticPopupDialogs["QUESTIE_PROVIDER_CHANGED_RELOAD"] = {
+        button1 = l10n('Reload UI'),
+        button2 = l10n('Cancel'),
+        OnAccept = function()
+            Questie.db.global.selectedDBProvider = pendingProviderSelection
+            pendingProviderSelection = nil
+            ReloadUI()
+        end,
+        OnCancel = function()
+            pendingProviderSelection = nil
+        end,
+        text = l10n('Reload UI to switch database providers.'),
+        OnShow = function(self)
+            self:SetFrameStrata("TOOLTIP")
+            self:SetFrameLevel(1000)
+        end,
+        timeout = 0,
+        whileDead = true,
+        hideOnEscape = true,
+        preferredIndex = 3,
+    }
+
     return {
         name = function() return l10n('Advanced'); end,
         type = "group",
         order = 7,
         args = {
+            provider_header = {
+                type = "header",
+                order = 0.1,
+                name = function() return l10n('Database Provider'); end,
+            },
+            provider_dropdown = {
+                type = "select",
+                order = 0.2,
+                style = "dropdown",
+                width = 1.5,
+                name = function() return l10n('Select Database Provider'); end,
+                values = function() return QuestieDBProvider:GetAvailable(); end,
+                disabled = function()
+                    local count = 0
+                    for _ in pairs(QuestieDBProvider:GetAvailable()) do
+                        count = count + 1
+                    end
+                    return count < 2
+                end,
+                get = function()
+                    return Questie.db.global.selectedDBProvider
+                end,
+                set = function(_, id)
+                    if not QuestieDBProvider:GetAvailable()[id] then
+                        error("Unknown Questie database provider: " .. tostring(id))
+                    end
+                    if id ~= Questie.db.global.selectedDBProvider then
+                        pendingProviderSelection = id
+                        StaticPopup_Show("QUESTIE_PROVIDER_CHANGED_RELOAD")
+                    end
+                end,
+            },
             map_options = {
                 type = "header",
                 order = 1,

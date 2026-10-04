@@ -126,6 +126,7 @@ local function startWithoutDatabase()
     else
         l10n:SetUILocale(GetLocale())
     end
+    QuestieDBProvider:NotifySelection()
 
     Questie:SetIcons()
     QuestieOptions:Initialize()
@@ -134,6 +135,10 @@ local function startWithoutDatabase()
     QuestieSlash.RegisterOptionsOnlySlashCommands()
     Questie.noDatabase = true
     Questie:Print("No Questie database provider loaded. Questie options remain available.")
+    if QuestieDBProvider:NeedsSelection() then
+        LibStub("AceConfigDialog-3.0"):SelectGroup("Questie", "advanced_tab")
+        QuestieOptions:OpenConfigWindow()
+    end
 end
 
 local function loadFullDatabase()
@@ -224,6 +229,7 @@ QuestieInit.Stages[1] = function() -- run as a coroutine
     end
 
     QuestieShutUp:ToggleFilters(Questie.db.profile.questieShutUp)
+    QuestieDBProvider:NotifySelection()
 
     coYield()
     ZoneDB:Initialize()
@@ -585,6 +591,7 @@ end
 -- called by the PLAYER_LOGIN event handler
 function QuestieInit:Init()
     databaseCompiledThisInitialization = false
+    QuestieDBProvider:LoadSelected()
     if not QuestieDBProvider:HasActive() and Questie.db.profile.trackerEnabled and not Questie.db.profile.showBlizzardQuestTimer then
         QuestieCompat.ShowWatchFrame()
     end

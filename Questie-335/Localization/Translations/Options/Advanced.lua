@@ -2,6 +2,26 @@
 local l10n = QuestieLoader:ImportModule("l10n")
 
 local advancedOptionsLocales = {
+    ["Database Provider"] = {
+        ["enUS"] = true,
+        ["deDE"] = "Datenbankanbieter",
+    },
+    ["Select Database Provider"] = {
+        ["enUS"] = true,
+        ["deDE"] = "Datenbankanbieter auswählen",
+    },
+    ["Reload UI to switch database providers."] = {
+        ["enUS"] = true,
+        ["deDE"] = "Benutzeroberfläche neu laden, um den Datenbankanbieter zu wechseln.",
+    },
+    ["Select a database provider under Advanced settings to enable quest data."] = {
+        ["enUS"] = true,
+        ["deDE"] = "Wähle unter Erweitert einen Datenbankanbieter, um Questdaten zu aktivieren.",
+    },
+    ["New database provider available: %s. Choose it under Advanced settings if desired."] = {
+        ["enUS"] = true,
+        ["deDE"] = "Neuer Datenbankanbieter verfügbar: %s. Bei Bedarf unter Erweitert auswählen.",
+    },
     ["Advanced"] = {
         ["ptBR"] = "Avançado",
         ["ruRU"] = "Дополнительно",

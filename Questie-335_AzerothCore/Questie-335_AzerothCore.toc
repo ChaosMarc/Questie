@@ -3,6 +3,8 @@
 ## Notes: AzerothCore WotLK database for Questie-335
 ## Version: 9.9.4-335
 ## RequiredDeps: Questie-335
+## LoadOnDemand: 1
+## X-Questie-DB-Provider: azerothcore-wotlk
 
 Database\Wotlk\wotlkItemDB.lua
 Database\Wotlk\wotlkNpcDB.lua
