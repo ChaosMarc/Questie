@@ -12,6 +12,7 @@ Database\Wotlk\wotlkObjectDB.lua
 Database\Wotlk\wotlkQuestDB.lua
 Database\LegacyZoneStart.lua
 Database\Zones\zoneTables.lua
+Database\LegacyWDMZones.lua
 Database\LegacyProvider.lua
 Database\Constants.lua
 Database\MeetingStones.lua
@@ -43,6 +44,7 @@ Database\Corrections\wotlkNPCFixes.lua
 Database\Corrections\wotlkItemFixes.lua
 Database\Corrections\wotlkObjectFixes.lua
 Compat\Corrections.lua
+Database\LegacyWDMSpawns.lua
 Database\LegacyCorrections.lua
 
 Localization\lookups\lookupQuestCategories.lua

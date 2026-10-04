@@ -19,6 +19,7 @@ local wotlkNpc = QuestieLoader:ImportModule("QuestieWotlkNpcFixes")
 local wotlkItem = QuestieLoader:ImportModule("QuestieWotlkItemFixes")
 local wotlkObject = QuestieLoader:ImportModule("QuestieWotlkObjectFixes")
 local itemStarts = QuestieLoader:ImportModule("QuestieItemStartFixes")
+local legacyWDMSpawns = QuestieLoader:ImportModule("LegacyWDMSpawns")
 
 corrections.AQWarEffortQuests = questBlacklist.AQWarEffortQuests
 corrections.ScourgeInvasionQuests = questBlacklist.ScourgeInvasionQuests
@@ -87,6 +88,57 @@ local function LoadCached()
     QuestieCompat.LoadBlacklists()
 end
 
+local function applyMissingInstanceSpawns(apply, validation, dbName, fallback, keys, reversedKeys)
+    local updates = {}
+    for id, instances in pairs(fallback) do
+        local record = db[dbName][id]
+        local original = record and record[keys.spawns]
+        if original then
+            local spawns
+            for baseZone, positions in pairs(instances) do
+                local existing = original[baseZone]
+                if existing then
+                    local hasPlaceholder
+                    local hasRealPosition
+                    for _, point in ipairs(existing) do
+                        if point[1] == -1 and point[2] == -1 then
+                            hasPlaceholder = true
+                        else
+                            hasRealPosition = true
+                        end
+                    end
+                    if hasPlaceholder then
+                        if not spawns then
+                            spawns = {}
+                            for zoneId, points in pairs(original) do
+                                spawns[zoneId] = points
+                            end
+                        end
+                        for zoneId, points in pairs(positions) do
+                            if not spawns[zoneId] then
+                                spawns[zoneId] = points
+                            elseif zoneId == baseZone and not hasRealPosition then
+                                local combined = {}
+                                for _, point in ipairs(existing) do
+                                    combined[#combined + 1] = point
+                                end
+                                for _, point in ipairs(points) do
+                                    combined[#combined + 1] = point
+                                end
+                                spawns[zoneId] = combined
+                            end
+                        end
+                    end
+                end
+            end
+            if spawns then
+                updates[id] = {[keys.spawns] = spawns}
+            end
+        end
+    end
+    apply(dbName, updates, reversedKeys, validation, false, true)
+end
+
 local function Load(apply, validation)
     questFixes:LoadMissingQuests()
     apply("questData", reputationFixes:Load(), db.questKeysReversed, validation)
@@ -105,6 +157,10 @@ local function Load(apply, validation)
     apply("objectData", wotlkObject:Load(), db.objectKeysReversed, validation)
     apply("itemData", itemStarts:LoadAutomaticQuestStarts(), db.itemKeysReversed, validation, true, true)
     QuestieCompat.LoadCorrections(apply, validation)
+    if Questie.IsWotlk then
+        applyMissingInstanceSpawns(apply, validation, "npcData", legacyWDMSpawns.npc, db.npcKeys, db.npcKeysReversed)
+        applyMissingInstanceSpawns(apply, validation, "objectData", legacyWDMSpawns.object, db.objectKeys, db.objectKeysReversed)
+    end
 end
 
 corrections:SetProviderCorrections({
