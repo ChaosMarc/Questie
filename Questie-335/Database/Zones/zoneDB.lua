@@ -392,22 +392,30 @@ end
 ---@return table
 function _ZoneDB:SplitSeasonalQuests()
     local sortKeys = QuestieDB.sortKeys
+    local specialSortKey = sortKeys.SPECIAL
+    local seasonalSortKey = sortKeys.SEASONAL
+    local specialQuests = specialSortKey and zoneMap[specialSortKey]
+    local seasonalQuests = seasonalSortKey and zoneMap[seasonalSortKey]
 
-    if (not zoneMap[sortKeys.SPECIAL]) and (not zoneMap[sortKeys.SEASONAL]) then
+    if not specialQuests and not seasonalQuests then
         return zoneMap
     end
 
     local questsToSplit = {}
-    if zoneMap[sortKeys.SEASONAL] then
-        for k, v in pairs(zoneMap[sortKeys.SEASONAL]) do questsToSplit[k] = v end
+    if seasonalQuests then
+        for k, v in pairs(seasonalQuests) do questsToSplit[k] = v end
     end
 
     -- Merging SEASONAL and SPECIAL quests to be split into real groups
-    if zoneMap[sortKeys.SPECIAL] then
-        for k, v in pairs(zoneMap[sortKeys.SPECIAL]) do questsToSplit[k] = v end
+    if specialQuests then
+        for k, v in pairs(specialQuests) do questsToSplit[k] = v end
     end
 
     local updatedZoneMap = zoneMap
+    local unmatchedSortKey = sortKeys.SPECIALTEMP or specialSortKey or seasonalSortKey
+    if unmatchedSortKey ~= sortKeys.SPECIALTEMP then
+        updatedZoneMap[unmatchedSortKey] = nil
+    end
 
     for questId, _ in pairs(questsToSplit) do
         local eventSortKey = _ZoneDB:GetEventSortKey(QuestieEvent:GetEventNameFor(questId))
@@ -419,15 +427,19 @@ function _ZoneDB:SplitSeasonalQuests()
         else
             -- here for actual "Special" quests that are not part of events
             -- E.g. CLUCK!
-            if (not updatedZoneMap[sortKeys.SPECIALTEMP]) then
-                updatedZoneMap[sortKeys.SPECIALTEMP] = {}
+            if (not updatedZoneMap[unmatchedSortKey]) then
+                updatedZoneMap[unmatchedSortKey] = {}
             end
-            updatedZoneMap[sortKeys.SPECIALTEMP][questId] = true
+            updatedZoneMap[unmatchedSortKey][questId] = true
         end
     end
 
-    updatedZoneMap[sortKeys.SEASONAL] = nil
-    updatedZoneMap[sortKeys.SPECIAL] = nil
+    if seasonalSortKey and seasonalSortKey ~= unmatchedSortKey then
+        updatedZoneMap[seasonalSortKey] = nil
+    end
+    if specialSortKey and specialSortKey ~= unmatchedSortKey then
+        updatedZoneMap[specialSortKey] = nil
+    end
     return updatedZoneMap
 end
 
