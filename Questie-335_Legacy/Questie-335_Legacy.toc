@@ -1,0 +1,56 @@
+## Interface: 30300
+## Title: Questie-335 Legacy Database
+## Notes: WotLK database snapshot from widxwer's last version
+## Version: 9.5.1-335
+## RequiredDeps: Questie-335
+## LoadOnDemand: 1
+## X-Questie-DB-Provider: legacy-wotlk
+
+Database\Wotlk\wotlkItemDB.lua
+Database\Wotlk\wotlkNpcDB.lua
+Database\Wotlk\wotlkObjectDB.lua
+Database\Wotlk\wotlkQuestDB.lua
+Database\LegacyZoneStart.lua
+Database\Zones\zoneTables.lua
+Database\LegacyProvider.lua
+Database\Constants.lua
+Database\MeetingStones.lua
+Database\LegacyWaypoints.lua
+Database\LegacyTownsfolkStart.lua
+Modules\QuestieMenu\ClassTrainers.lua
+Modules\QuestieMenu\Mailboxes.lua
+Modules\QuestieMenu\MeetingStones.lua
+Modules\QuestieMenu\ProfessionTrainers.lua
+Database\LegacyTownsfolk.lua
+Database\LegacyMeetingStoneNames.lua
+
+Database\Corrections\AutoTableUpdates.lua
+Database\Corrections\QuestieItemBlacklist.lua
+Database\Corrections\QuestieNPCBlacklist.lua
+Database\Corrections\QuestieQuestBlacklist.lua
+Database\Corrections\Automatic\itemStartFixes.lua
+Database\Corrections\Automatic\classicQuestReputationFixes.lua
+Database\Corrections\classicQuestFixes.lua
+Database\Corrections\classicNPCFixes.lua
+Database\Corrections\classicItemFixes.lua
+Database\Corrections\classicObjectFixes.lua
+Database\Corrections\tbcQuestFixes.lua
+Database\Corrections\tbcNPCFixes.lua
+Database\Corrections\tbcItemFixes.lua
+Database\Corrections\tbcObjectFixes.lua
+Database\Corrections\wotlkQuestFixes.lua
+Database\Corrections\wotlkNPCFixes.lua
+Database\Corrections\wotlkItemFixes.lua
+Database\Corrections\wotlkObjectFixes.lua
+Compat\Corrections.lua
+Database\LegacyCorrections.lua
+
+Localization\lookups\lookupQuestCategories.lua
+Localization\lookups\lookupZones.lua
+Localization\lookups\Wotlk\lookupItems\lookupItems.xml
+Localization\lookups\Wotlk\lookupNpcs\lookupNpcs.xml
+Localization\lookups\Wotlk\lookupObjects\lookupObjects.xml
+Localization\lookups\Wotlk\lookupQuests\lookupQuests.xml
+
+Database\QuestXP\DB\xpDB-wotlk.lua
+Database\LegacyXP.lua
