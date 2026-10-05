@@ -20,6 +20,10 @@ local wotlkItem = QuestieLoader:ImportModule("QuestieWotlkItemFixes")
 local wotlkObject = QuestieLoader:ImportModule("QuestieWotlkObjectFixes")
 local itemStarts = QuestieLoader:ImportModule("QuestieItemStartFixes")
 
+corrections.AQWarEffortQuests = questBlacklist.AQWarEffortQuests
+corrections.ScourgeInvasionQuests = questBlacklist.ScourgeInvasionQuests
+corrections.SunsReachQuests = questBlacklist.SunsReachQuests
+
 local function filterExpansion(values)
     for id, value in pairs(values) do
         if value == corrections.WOTLK_ONLY then

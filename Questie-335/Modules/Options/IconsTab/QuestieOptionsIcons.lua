@@ -285,7 +285,7 @@ local function _BuildQuestIconSurfaceOptions()
     args.showAQWarEffortQuests = {
         type = "toggle",
         order = 2.20,
-        hidden = (not Questie.IsClassic),
+        hidden = not (Questie.IsClassic or QuestieCompat.Is335),
         name = function() return l10n('Available AQ War Effort Quests'); end,
         desc = function() return l10n('If checked, the locations of the AQ War Effort quests will be shown on the map/minimap.'); end,
         width = 1.595,

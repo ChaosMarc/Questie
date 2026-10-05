@@ -865,20 +865,6 @@ function QuestieQuestBlacklist:Load()
 
         [8743] = true, -- Bang a Gong! (AQ40 opening quest)
 
-        -- Classic Phase 6 Invasion quests
-        -- Investigate the Scourge of X
-        [9260] = true,
-        [9261] = true,
-        [9262] = true,
-        [9263] = true,
-        [9264] = true,
-        [9265] = true,
-        --
-        [9085] = true,
-        [9153] = true,
-        [9154] = true,
-        --
-
         ----- TBC -------------- TBC quests --------------- TBC -----
         ----- TBC ------------- starting here -------------- TBC -----
 
@@ -1361,19 +1347,6 @@ function QuestieQuestBlacklist:Load()
         [14088] = true, -- durotar (troll)
         [14089] = true, -- tirisfal (undead)
 
-        -- Scourge invasion
-        [12616] = true,
-        [12752] = true,
-        [12753] = true,
-        [12772] = true,
-        [12775] = true,
-        [12777] = true,
-        [12782] = true,
-        [12783] = true,
-        [12784] = true,
-        [12808] = true,
-        [12811] = true,
-
         --- Phase 2 Secrets of Ulduar
         [13372] = true, -- 10man EoE keys become unavailable with P2
         [13384] = true, -- 10man EoE keys become unavailable with P2
@@ -1662,6 +1635,56 @@ QuestieQuestBlacklist.AQWarEffortQuests = {
     [8797] = true,
     [10500] = true,
     [10501] = true,
+}
+
+QuestieQuestBlacklist.ScourgeInvasionQuests = {
+    -- Classic Phase 6
+    [9085] = true,
+    [9153] = true,
+    [9154] = true,
+    [9247] = true,
+    [9260] = true,
+    [9261] = true,
+    [9262] = true,
+    [9263] = true,
+    [9264] = true,
+    [9265] = true,
+    [9292] = true,
+    [9295] = true,
+    [9299] = true,
+    [9300] = true,
+    [9301] = true,
+    [9302] = true,
+    [9304] = true,
+    [9310] = true,
+    -- WotLK pre-patch
+    [12616] = true,
+    [12752] = true,
+    [12753] = true,
+    [12772] = true,
+    [12775] = true,
+    [12777] = true,
+    [12782] = true,
+    [12783] = true,
+    [12784] = true,
+    [12808] = true,
+    [12811] = true,
+    [12816] = true,
+    [12817] = true,
+}
+
+QuestieQuestBlacklist.SunsReachQuests = {
+    [11496] = true,
+    [11513] = true,
+    [11520] = true,
+    [11524] = true,
+    [11532] = true,
+    [11535] = true,
+    [11538] = true,
+    [11539] = true,
+    [11542] = true,
+    [11545] = true,
+    [11549] = true,
 }
 
 function QuestieQuestBlacklist.LoadAutoBlacklistWotlk()
@@ -2335,4 +2358,3 @@ function QuestieQuestBlacklist.LoadAutoBlacklistWotlk()
 
     }
 end
-
