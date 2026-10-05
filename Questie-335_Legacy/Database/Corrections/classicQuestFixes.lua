@@ -2749,7 +2749,7 @@ function QuestieQuestFixes:Load()
         },
         [7946] = {
             [questKeys.questLevel] = 60,
-            [questKeys.specialFlags] = 1,
+            [questKeys.specialFlags] = 0,
         },
         [8105] = {
             [questKeys.specialFlags] = 0,
