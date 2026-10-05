@@ -247,6 +247,12 @@ function QuestieTBCQuestFixes:Load()
         [1859] = {
             [questKeys.requiredRaces] = raceIDs.ORC + raceIDs.TROLL,
         },
+        [1881] = {
+            [questKeys.exclusiveTo] = {1883,9402},
+        },
+        [1883] = {
+            [questKeys.exclusiveTo] = {1881,9402},
+        },
         [1886] = {
             [questKeys.requiredRaces] = raceIDs.UNDEAD,
         },

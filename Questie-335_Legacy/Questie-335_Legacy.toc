@@ -46,7 +46,7 @@ Database\Corrections\wotlkObjectFixes.lua
 Compat\Corrections.lua
 Database\LegacyWDMSpawns.lua
 Database\LegacyCorrections.lua
-Database\LegacyDarkmoonEvent.lua
+Database\LegacyWorldEvents.lua
 
 Localization\lookups\lookupQuestCategories.lua
 Localization\lookups\lookupZones.lua

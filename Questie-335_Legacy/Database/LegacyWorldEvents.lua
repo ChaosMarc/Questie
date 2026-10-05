@@ -3,10 +3,20 @@ local db = QuestieLoader:ImportModule("QuestieDB")
 local zone = QuestieLoader:ImportModule("ZoneDB")
 
 event:SetCalendarAliases({
-    names = {["Darkmoon Faire"] = "Darkmoon Faire"},
-    textures = {["darkmoon"] = "Darkmoon Faire"},
-    plausibleMonths = {},
+    names = {
+        ["Brewfest"] = "Brewfest",
+        ["Darkmoon Faire"] = "Darkmoon Faire",
+    },
+    textures = {
+        ["brewfest"] = "Brewfest",
+        ["darkmoon"] = "Darkmoon Faire",
+    },
+    plausibleMonths = {
+        ["Brewfest"] = {9, 10},
+    },
 })
+
+event.eventDates["Brewfest"] = {startDate = "20/9", endDate = "5/10"}
 
 local faireNpcIds = {
     10445, 14828, 14829, 14832, 14833, 14841, 14844,
@@ -53,4 +63,14 @@ local questIds = {
 
 for _, questId in ipairs(questIds) do
     table.insert(event.eventQuests, {"Darkmoon Faire", questId})
+end
+
+local brewfestQuestIds = {
+    11117, 11118, 11120, 11122, 11293, 11294, 11318, 11407,
+    11408, 11409, 11412, 11431, 11441, 11442, 11446, 11447,
+    12020, 12022, 12062, 12191, 12192, 12318, 12420, 12421,
+}
+
+for _, questId in ipairs(brewfestQuestIds) do
+    table.insert(event.eventQuests, {"Brewfest", questId})
 end

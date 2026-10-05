@@ -2087,7 +2087,6 @@ function QuestieQuestFixes:Load()
         [5887] = {
             [questKeys.preQuestSingle] = {4102},
             [questKeys.exclusiveTo] = {5888,5889,5890,5891},
-            [questKeys.specialFlags] = 0,
         },
         [5888] = {
             [questKeys.preQuestSingle] = {4102},
@@ -2107,7 +2106,6 @@ function QuestieQuestFixes:Load()
         [5891] = {
             [questKeys.preQuestSingle] = {4102},
             [questKeys.exclusiveTo] = {5887,5888,5889,5890},
-            [questKeys.specialFlags] = 0,
         },
         [5892] = {
             [questKeys.questLevel] = 55,
