@@ -566,7 +566,7 @@ tinsert(QuestieEvent.eventQuests, {"Brewfest", 11293}) -- Bark for the Barleybre
 tinsert(QuestieEvent.eventQuests, {"Brewfest", 11294}) -- Bark for the Thunderbrews!
 tinsert(QuestieEvent.eventQuests, {"Brewfest", 11407}) -- Bark for Drohn's Distillery!
 tinsert(QuestieEvent.eventQuests, {"Brewfest", 11408}) -- Bark for T'chali's Voodoo Brewery!
-tinsert(QuestieEvent.eventQuests, {"Brewfest", 12318}) -- Save Brewfest!
+--tinsert(QuestieEvent.eventQuests, {"Brewfest", 12318}) -- Save Brewfest!
 tinsert(QuestieEvent.eventQuests, {"Brewfest", 12491}) -- Direbrew's Dire Brew
 tinsert(QuestieEvent.eventQuests, {"Brewfest", 12492}) -- Direbrew's Dire Brew
 
