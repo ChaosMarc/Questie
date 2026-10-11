@@ -37,11 +37,6 @@ QuestieCompat.frame:SetScript("OnEvent", function(self, event, ...)
     QuestieCompat[event](self, event, ...)
 end)
 
--- current expansion level (https://wowpedia.fandom.com/wiki/WOW_PROJECT_ID)
-QuestieCompat.WOW_PROJECT_CLASSIC = 2
-QuestieCompat.WOW_PROJECT_BURNING_CRUSADE_CLASSIC = 5
-QuestieCompat.WOW_PROJECT_WRATH_CLASSIC = 11
-
 -- check for a specific type of group
 QuestieCompat.LE_PARTY_CATEGORY_HOME = 1 -- home-realm parties
 QuestieCompat.LE_PARTY_CATEGORY_INSTANCE = 2 -- instance-specific groups

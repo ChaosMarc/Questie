@@ -364,6 +364,3 @@ end
 function QuestieAuto.GOSSIP_CLOSED()
     _StartStoppedTalkingTimer()
 end
-
-function QuestieAuto.QUEST_ACCEPTED()
-end
